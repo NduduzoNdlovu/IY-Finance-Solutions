@@ -11,14 +11,6 @@ $bodyClass = 'contact-page';
 $pageStyles = ['css/contact-page.css'];
 $pageScript = 'contact-page.js';
 
-start_admin_session();
-$contactFormState = $_SESSION['contact_form_state'] ?? [];
-unset($_SESSION['contact_form_state']);
-
-$contactFormStatus = is_array($contactFormState) ? (string) ($contactFormState['status'] ?? '') : '';
-$contactFormMessage = is_array($contactFormState) ? (string) ($contactFormState['message'] ?? '') : '';
-$contactFormOld = is_array($contactFormState['old'] ?? null) ? $contactFormState['old'] : [];
-
 $mapBranches = [];
 foreach ($branches as $slug => $branch) {
     $mapBranches[] = [
@@ -96,79 +88,6 @@ require PROJECT_ROOT . '/includes/header.php';
             <span><small>Chat on WhatsApp</small><strong>065 571 1840</strong></span>
             <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
         </a>
-    </div>
-</section>
-
-<section class="section contact-form-section" id="contact-form">
-    <div class="shell contact-form-layout">
-        <div class="contact-form-intro reveal">
-            <span class="eyebrow">Send us a message</span>
-            <h2>Tell us how we can assist you.</h2>
-            <p>Complete the form and our team will receive your message securely at <strong>info@iyfinancesolutions.co.za</strong>.</p>
-
-            <div class="contact-form-trust">
-                <div>
-                    <i class="fa-solid fa-lock" aria-hidden="true"></i>
-                    <span><strong>Confidential</strong><small>Your details are used only to respond to your enquiry.</small></span>
-                </div>
-                <div>
-                    <i class="fa-solid fa-reply" aria-hidden="true"></i>
-                    <span><strong>Direct response</strong><small>Our team can reply directly to the email address you provide.</small></span>
-                </div>
-            </div>
-        </div>
-
-        <div class="contact-form-card reveal">
-            <?php if ($contactFormMessage !== ''): ?>
-                <div class="contact-form-alert <?= $contactFormStatus === 'success' ? 'is-success' : 'is-error' ?>" role="status" aria-live="polite">
-                    <i class="fa-solid <?= $contactFormStatus === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation' ?>" aria-hidden="true"></i>
-                    <span><?= h($contactFormMessage) ?></span>
-                </div>
-            <?php endif; ?>
-
-            <form action="<?= h(site_url('contact-submit.php')) ?>" method="post" data-contact-form>
-                <input type="hidden" name="csrf_token" value="<?= h(csrf_token()) ?>">
-
-                <div class="contact-honeypot" aria-hidden="true">
-                    <label for="company-website">Company website</label>
-                    <input id="company-website" name="company_website" type="text" tabindex="-1" autocomplete="off">
-                </div>
-
-                <div class="contact-field-grid">
-                    <div class="contact-field">
-                        <label for="contact-name">Full name <span aria-hidden="true">*</span></label>
-                        <div class="contact-input-wrap">
-                            <i class="fa-regular fa-user" aria-hidden="true"></i>
-                            <input id="contact-name" name="name" type="text" value="<?= h((string) ($contactFormOld['name'] ?? '')) ?>" minlength="2" maxlength="100" autocomplete="name" required>
-                        </div>
-                    </div>
-
-                    <div class="contact-field">
-                        <label for="contact-email">Email address <span aria-hidden="true">*</span></label>
-                        <div class="contact-input-wrap">
-                            <i class="fa-regular fa-envelope" aria-hidden="true"></i>
-                            <input id="contact-email" name="email" type="email" value="<?= h((string) ($contactFormOld['email'] ?? '')) ?>" maxlength="254" autocomplete="email" required>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="contact-field">
-                    <div class="contact-label-row">
-                        <label for="contact-message">How can we assist? <span aria-hidden="true">*</span></label>
-                        <span data-message-count>0 / 4000</span>
-                    </div>
-                    <textarea id="contact-message" name="message" minlength="10" maxlength="4000" rows="7" required data-contact-message><?= h((string) ($contactFormOld['message'] ?? '')) ?></textarea>
-                </div>
-
-                <div class="contact-form-footer">
-                    <p><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Please do not submit passwords, PINs or banking login details.</p>
-                    <button class="button button-primary" type="submit" data-contact-submit>
-                        <span>Send message</span>
-                        <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
-                    </button>
-                </div>
-            </form>
-        </div>
     </div>
 </section>
 
