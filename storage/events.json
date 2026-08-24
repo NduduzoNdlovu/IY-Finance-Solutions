@@ -1,0 +1,20 @@
+[
+    {
+        "id": "event-20260823075103-738c2378b1",
+        "title": "IY Finance Solutions Live on Inanda FM",
+        "category": "radio",
+        "description": "Tune in as IY Finance Solutions goes live on Inanda FM! Join us for an informative conversation about financial wellness, practical solutions and taking confident steps towards financial freedom.",
+        "start_date": "2026-08-27",
+        "start_time": "13:30",
+        "end_date": "2026-08-27",
+        "end_time": "14:00",
+        "location": "Inanda FM",
+        "address": "234 Inanda street, durban 4001",
+        "image": "event-20260823-075103-d97adead96c1ac.jpg",
+        "status_override": "",
+        "gallery_url": "http://localhost:8000/gallery.php",
+        "visible": true,
+        "created_at": "2026-08-23T07:51:03+00:00",
+        "updated_at": "2026-08-23T07:51:03+00:00"
+    }
+]

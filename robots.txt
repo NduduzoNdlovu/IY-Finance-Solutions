@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /config/
+Disallow: /includes/
+Disallow: /storage/
+
+Sitemap: https://www.iyfinancesolutions.co.za/sitemap.xml
+

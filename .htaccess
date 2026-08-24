@@ -1,0 +1,27 @@
+DirectoryIndex index.php
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    RewriteRule ^index\.html$ index.php [R=301,L,NE]
+    RewriteRule ^(.+)\.html$ $1.php [R=301,L,NE]
+</IfModule>
+
+ErrorDocument 404 /404.php
+
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+
+    <FilesMatch "\.(?:css|js|jpg|jpeg|png|webp|gif|svg)$">
+        Header set Cache-Control "public, max-age=2592000"
+    </FilesMatch>
+</IfModule>
+
+<FilesMatch "^(?:\.user\.ini|\.htaccess|README\.md)$">
+    Require all denied
+</FilesMatch>
+

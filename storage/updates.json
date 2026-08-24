@@ -1,0 +1,18 @@
+[
+    {
+        "id": "update-20260823051137-1b1b684d41",
+        "title": "Live on Inanda FM",
+        "slug": "live-on-inanda-fm",
+        "category": "announcement",
+        "description": "IY Finance Solutions is going LIVE on Inanda FM! Tune in and join the conversation as we share insights that can help you take control of your financial future.",
+        "published_on": "2026-08-23",
+        "expires_on": "2026-08-29",
+        "image": "update-20260823-051137-f58f33e7a75fde.png",
+        "cta_label": "Have a question?",
+        "cta_url": "http://localhost:8000/contact.php",
+        "featured": false,
+        "visible": true,
+        "created_at": "2026-08-23T05:11:37+00:00",
+        "updated_at": "2026-08-23T08:53:58+00:00"
+    }
+]
