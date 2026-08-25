@@ -2,4 +2,15 @@
 deployment:
   tasks:
     - export DEPLOYPATH=/home/iyservlk/public_html/
-    - /usr/bin/rsync -a --exclude='.git/' --exclude='.github/' --exclude='.cpanel.yml' ./ $DEPLOYPATH
+    - /bin/mkdir -p $DEPLOYPATH
+    - /bin/cp -R admin $DEPLOYPATH
+    - /bin/cp -R assets $DEPLOYPATH
+    - /bin/cp -R config $DEPLOYPATH
+    - /bin/cp -R includes $DEPLOYPATH
+    - /bin/cp -R uploads $DEPLOYPATH
+    - /bin/cp -R storage $DEPLOYPATH
+    - /bin/cp .htaccess $DEPLOYPATH
+    - /bin/cp .user.ini $DEPLOYPATH
+    - /bin/cp *.php $DEPLOYPATH
+    - /bin/cp robots.txt $DEPLOYPATH
+    - /bin/cp sitemap.xml $DEPLOYPATH
