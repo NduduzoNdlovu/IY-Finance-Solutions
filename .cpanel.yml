@@ -10,6 +10,7 @@ deployment:
     - /bin/cp -R uploads $DEPLOYPATH
     - /bin/cp -R storage $DEPLOYPATH
     - /bin/cp .htaccess $DEPLOYPATH
+    - /bin/cp .user.ini $DEPLOYPATH
     - /bin/cp *.php $DEPLOYPATH
     - /bin/cp robots.txt $DEPLOYPATH
     - /bin/cp sitemap.xml $DEPLOYPATH
