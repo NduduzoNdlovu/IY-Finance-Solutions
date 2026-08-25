@@ -28,11 +28,11 @@
     z-index: -2;
     inset: 0;
     content: "";
-    background: url('../images/updates.webp') center / cover no-repeat;
+    background: url('../images/hero/updates.webp') center / cover no-repeat;
 }
 
 .events-hero::before {
-    background-image: url('../images/events.png');
+    background-image: url('../images/hero/events.webp');
     background-position: center 35%;
 }
 
@@ -913,7 +913,8 @@ button.calendar-day:hover {
     }
 
     .content-hero::after {
-        background: linear-gradient(90deg, rgba(3, 35, 26, .97), rgba(3, 35, 26, .78));
+        /* background: linear-gradient(90deg, rgba(3, 35, 26, .97), rgba(3, 35, 26, .78)); */
+           background: linear-gradient(90deg, rgba(3, 31, 23, 0.822), rgba(3, 31, 23, 0.717));
     }
 
     .content-hero-inner {

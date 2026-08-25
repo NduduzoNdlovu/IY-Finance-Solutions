@@ -13,12 +13,12 @@ $pageStyles[] = 'css/home-content-preview.css';
 $pageScript = 'home-animations.js';
     $homeHeroImages = [
         //   'images/home-hero/confidence.png',
-        'images/home-hero/family-advice.webp',
-        // 'images/home-hero/hero-background.png',
-        'images/home-hero/couple-consultation.webp',
-        'images/home-hero/entrepreneur-guidance.webp',
-        'images/home-hero/family-security.webp',
-        'images/home-hero/presentation.png',
+        'images/hero/family-advice.webp',
+        'images/hero/hero-background.webp',
+        'images/hero/couple-consultation.webp',
+        'images/hero/entrepreneur-guidance.webp',
+        'images/hero/family-security.webp',
+        'images/hero/presentation.webp',
        
     ];
 require PROJECT_ROOT . '/includes/header.php';
@@ -34,7 +34,7 @@ require PROJECT_ROOT . '/includes/header.php';
             loop
             playsinline
             preload="metadata"
-            poster="<?= h(asset_url('images/family.png')) ?>"
+            poster="<?= h(asset_url('images/hero/iy-office-loop-poster.webp')) ?>"
             tabindex="-1"
             aria-hidden="true"
             data-home-hero-video
@@ -143,7 +143,7 @@ require PROJECT_ROOT . '/includes/header.php';
 <section class="section about-preview">
     <div class="shell media-layout">
         <div class="media-collage reveal">
-            <img src="<?= h(asset_url('images/family.png')) ?>" alt="A South African family reviewing financial information together" width="1940" height="805" loading="lazy">
+            <img src="<?= h(asset_url('images/hero/family.webp')) ?>" alt="A South African family reviewing financial information together" width="1940" height="805" loading="lazy">
             <!-- <div class="experience-badge"><strong>10</strong><span>Years of trusted service</span></div> -->
        <div class="experience-badge"><strong data-count-to="10">10</strong><span>Years of trusted service</span></div>
         </div>

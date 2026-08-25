@@ -17,9 +17,9 @@ $servicesForNavigation = require PROJECT_ROOT . '/config/services.php';
     <meta property="og:type" content="website">
     <meta property="og:title" content="<?= h($pageTitle) ?>">
     <meta property="og:description" content="<?= h($pageDescription) ?>">
-    <meta property="og:image" content="<?= h(site_url('assets/images/og-image.jpg')) ?>">
+    <meta property="og:image" content="<?= h(site_url('assets/images/logo/og-image.jpg')) ?>">
     <title><?= h($pageTitle) ?></title>
-    <link rel="icon" type="image/svg+xml" href="<?= h(asset_url('images/IY finance.png')) ?>">
+    <link rel="icon" type="image/svg+xml" href="<?= h(asset_url('images/logo/IY finance.webp')) ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="<?= h(asset_url('css/main.css')) ?>">
@@ -51,7 +51,7 @@ $servicesForNavigation = require PROJECT_ROOT . '/config/services.php';
    href="<?= h(site_url('index.php')) ?>"
    aria-label="IY Finance Solutions home">
 
-    <img src="<?= h(asset_url('images/logoimg.png')) ?>"
+    <img src="<?= h(asset_url('images/logo/logoimg.webp')) ?>"
          alt=""
          width="54"
          height="54">

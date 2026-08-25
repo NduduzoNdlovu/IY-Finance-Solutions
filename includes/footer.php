@@ -22,7 +22,7 @@ $servicesForFooter = require PROJECT_ROOT . '/config/services.php';
     <div class="shell footer-grid">
         <div class="footer-brand">
             <a class="brand brand-footer" href="<?= h(site_url('index.php')) ?>">
-                <img src="<?= h(asset_url('images/logoimg.png')) ?>" alt="" width="54" height="54">
+                <img src="<?= h(asset_url('images/logo/logoimg.webp')) ?>" alt="" width="54" height="54">
                 <span><strong>Inqubeko Yezibusiso</strong><small> Finance Solutions</small></span>
             </a>
             <p><?= h($site['description']) ?></p>

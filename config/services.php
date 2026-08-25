@@ -245,7 +245,7 @@ return [
         'name' => 'Credit Clearance',
         'icon' => 'fa-chart-simple',
         'summary' => 'Practical assistance to understand and improve your credit profile.',
-        'hero_image' => 'credit-clearance.png',
+        'hero_image' => 'credit-clearance.webp',
         'hero_position' => 'center right',
         'hero' => 'Move toward a healthier credit profile with expert guidance',
         'lead' => 'Start with an accurate review of your credit record and realistic next steps.',
