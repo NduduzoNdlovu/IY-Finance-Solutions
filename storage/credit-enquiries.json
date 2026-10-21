@@ -1,0 +1,16 @@
+[
+    {
+        "id": "credit-20261020075614-94ee997f4c",
+        "created_at": "2026-10-20T07:56:14+00:00",
+        "first_name": "Nduduzo",
+        "surname": "Ndlovu",
+        "phone": "0740998713",
+        "email": "nduduzondlovu635@gmail.com",
+        "credit_type": "personal-loan",
+        "credit_type_label": "Personal loan",
+        "decline_reason": "credit-profile",
+        "decline_reason_label": "I was told there is an issue with my credit profile",
+        "message": "",
+        "status": "new"
+    }
+]

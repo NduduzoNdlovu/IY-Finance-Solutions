@@ -79,11 +79,21 @@ function content_write_records(string $file, array $records): bool
     }
 
     @chmod($temporaryFile, 0640);
+
+    // Windows (including the PHP built-in development server) cannot replace
+    // an existing file with rename(). Remove the old JSON file first so the
+    // same storage routine works in local development and on Linux hosting.
+    if (DIRECTORY_SEPARATOR === '\\' && is_file($file) && !@unlink($file)) {
+        @unlink($temporaryFile);
+        return false;
+    }
+
     if (!rename($temporaryFile, $file)) {
         @unlink($temporaryFile);
         return false;
     }
 
+    @chmod($file, 0640);
     return true;
 }
 

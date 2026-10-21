@@ -1,0 +1,347 @@
+.iy-promo[hidden] {
+    display: none;
+}
+
+.iy-promo {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+}
+
+.iy-promo__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgb(2 28 21 / 76%);
+    backdrop-filter: blur(7px);
+}
+
+.iy-promo__card {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(280px, .84fr) minmax(440px, 1.16fr);
+    width: min(1040px, calc(100vw - 48px));
+    max-height: min(680px, calc(100vh - 48px));
+    overflow: auto;
+    border: 1px solid rgb(145 205 50 / 42%);
+    border-radius: 28px;
+    background: #f4f7f1;
+    box-shadow: 0 30px 90px rgb(0 24 18 / 42%);
+    color: #072f25;
+    isolation: isolate;
+    animation: iy-promo-in 420ms cubic-bezier(.2, .85, .3, 1) both;
+}
+
+.iy-promo__brand-panel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 480px;
+    padding: 44px;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 12% 90%, rgb(147 211 40 / 30%), transparent 34%),
+        linear-gradient(145deg, #043e30 0%, #006a52 100%);
+    color: #fff;
+}
+
+.iy-promo__brand-panel::after {
+    content: "";
+    position: absolute;
+    right: -100px;
+    bottom: -120px;
+    width: 300px;
+    aspect-ratio: 1;
+    border: 45px solid rgb(154 219 49 / 15%);
+    border-radius: 50%;
+    z-index: -1;
+}
+
+.iy-promo__logo {
+    width: 74px;
+    height: 74px;
+    object-fit: contain;
+    margin-bottom: 25px;
+    padding: 8px;
+    border-radius: 18px;
+    background: #fff;
+}
+
+.iy-promo__eyebrow,
+.iy-promo__label,
+.iy-promo__offer span {
+    margin: 0;
+    color: #91d331;
+    font-size: .75rem;
+    font-weight: 800;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
+.iy-promo__brand-panel h2 {
+    margin: 10px 0 14px;
+    font-size: clamp(1.8rem, 3vw, 2.85rem);
+    line-height: 1.06;
+    letter-spacing: -.04em;
+}
+
+.iy-promo__brand-panel > p:last-of-type {
+    margin: 0;
+    color: rgb(255 255 255 / 78%);
+    font-size: .98rem;
+    line-height: 1.65;
+}
+
+.iy-promo__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 28px;
+}
+
+.iy-promo__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-height: 46px;
+    padding: 0 18px;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    font-size: .9rem;
+    font-weight: 800;
+    text-decoration: none;
+    transition: transform 180ms ease, background 180ms ease;
+}
+
+.iy-promo__button:hover {
+    transform: translateY(-2px);
+}
+
+.iy-promo__button--primary {
+    background: #91d331;
+    color: #052d23;
+}
+
+.iy-promo__button--secondary {
+    border-color: rgb(255 255 255 / 35%);
+    color: #fff;
+}
+
+.iy-promo__details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 22px;
+    padding: 42px;
+}
+
+.iy-promo__label {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 12px;
+    color: #08765b;
+}
+
+.iy-promo__label i {
+    font-size: 1rem;
+}
+
+.iy-promo__chips,
+.iy-promo__documents {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.iy-promo__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.iy-promo__chips li {
+    padding: 8px 11px;
+    border: 1px solid #d7e3d5;
+    border-radius: 999px;
+    background: #fff;
+    color: #25483f;
+    font-size: .8rem;
+    font-weight: 700;
+}
+
+.iy-promo__offer {
+    padding: 18px 20px;
+    border-left: 4px solid #91d331;
+    border-radius: 4px 16px 16px 4px;
+    background: #e7f3df;
+}
+
+.iy-promo__offer span,
+.iy-promo__offer strong,
+.iy-promo__offer small {
+    display: block;
+}
+
+.iy-promo__offer strong {
+    margin: 3px 0;
+    color: #043e30;
+    font-size: clamp(1.35rem, 2.4vw, 2rem);
+}
+
+.iy-promo__offer small {
+    color: #52665f;
+    font-size: .72rem;
+}
+
+.iy-promo__bottom-grid {
+    display: grid;
+    grid-template-columns: .82fr 1.18fr;
+    gap: 20px;
+}
+
+.iy-promo__documents {
+    display: grid;
+    gap: 7px;
+    color: #29483f;
+    font-size: .85rem;
+    font-weight: 700;
+}
+
+.iy-promo__documents li::before {
+    content: "\2713";
+    margin-right: 8px;
+    color: #78b921;
+    font-weight: 900;
+}
+
+.iy-promo__contact {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin: 0;
+    padding: 16px;
+    border: 1px solid #d9e4d6;
+    border-radius: 16px;
+    background: #fff;
+    color: #4c615a;
+    font-size: .77rem;
+    font-style: normal;
+    line-height: 1.45;
+}
+
+.iy-promo__contact strong {
+    color: #073c2d;
+    font-size: .9rem;
+}
+
+.iy-promo__contact a {
+    color: #08765b;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.iy-promo__contact--action {
+    justify-content: center;
+    min-height: 150px;
+}
+
+.iy-promo__contact--action a {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 4px;
+}
+
+.iy-promo__close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border: 0;
+    border-radius: 50%;
+    background: rgb(3 48 37 / 88%);
+    color: #fff;
+    cursor: pointer;
+    font-size: 1.75rem;
+    line-height: 1;
+}
+
+body.iy-promo-open {
+    overflow: hidden;
+}
+
+@keyframes iy-promo-in {
+    from { opacity: 0; transform: translateY(18px) scale(.975); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 760px) {
+    .iy-promo {
+        padding: 14px;
+    }
+
+    .iy-promo__card {
+        grid-template-columns: 1fr;
+        width: min(100%, 560px);
+        max-height: calc(100dvh - 28px);
+        border-radius: 22px;
+    }
+
+    .iy-promo__brand-panel {
+        min-height: auto;
+        padding: 30px 24px 25px;
+    }
+
+    .iy-promo__logo {
+        width: 58px;
+        height: 58px;
+        margin-bottom: 18px;
+    }
+
+    .iy-promo__brand-panel h2 {
+        padding-right: 32px;
+        font-size: clamp(1.55rem, 8vw, 2.2rem);
+    }
+
+    .iy-promo__details {
+        gap: 17px;
+        padding: 24px;
+    }
+
+    .iy-promo__bottom-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .iy-promo__actions {
+        margin-top: 20px;
+    }
+}
+
+@media (max-height: 620px) and (min-width: 761px) {
+    .iy-promo__brand-panel {
+        min-height: 430px;
+    }
+
+    .iy-promo__brand-panel,
+    .iy-promo__details {
+        padding-top: 30px;
+        padding-bottom: 30px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .iy-promo__card,
+    .iy-promo__button {
+        animation: none;
+        transition: none;
+    }
+}

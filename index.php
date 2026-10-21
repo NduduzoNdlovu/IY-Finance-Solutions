@@ -51,31 +51,69 @@ require PROJECT_ROOT . '/includes/header.php';
         <?php endforeach; ?>
     <div class="home-hero-overlay" aria-hidden="true"></div>
     <div class="shell home-hero-inner">
-        <div class="hero-copy">
-            <span class="hero-kicker"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Trusted financial guidance since 2016</span>
-            <h1>A clearer path to <em>financial freedom.</em></h1>
-            <p>Practical solutions, respectful support and straight answers for every step of your financial journey.</p>
-            <div class="hero-actions">
-                <a class="button button-accent" href="#services">Explore our services <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
-                <a class="button button-ghost" href="https://wa.me/<?= h($site['whatsapp_link']) ?>?text=Hello%20IY%20Finance%20Solutions%2C%20I%20would%20like%20assistance." target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i> Speak to our team</a>
-            </div>
+        <div class="home-hero-designs" data-home-hero-designs aria-live="polite">
+            <article class="home-hero-design is-active" data-home-hero-design="0">
+                <div class="hero-copy">
+                    <span class="hero-kicker"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Trusted financial guidance since 2016</span>
+                    <h1>A clearer path to <em>financial freedom.</em></h1>
+                    <p>Practical solutions, respectful support and straight answers for every step of your financial journey.</p>
+                    <div class="hero-actions">
+                        <a class="button button-accent" href="#services">Explore our services <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+                        <a class="button button-ghost" href="https://wa.me/<?= h($site['whatsapp_link']) ?>?text=Hello%20IY%20Finance%20Solutions%2C%20I%20would%20like%20assistance." target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i> Speak to our team</a>
+                    </div>
+                </div>
+
+                <aside class="hero-trust-card" aria-label="Company credentials">
+                    <span class="trust-label">Licensed. Registered. Client-focused.</span>
+                    <div class="trust-row">
+                        <strong>FSP <?= h($site['fsp']) ?></strong>
+                        <span>Licensed financial services provider</span>
+                    </div>
+                    <div class="trust-row">
+                        <strong>NCRCP <?= h($site['ncrcp']) ?></strong>
+                        <span>Registered credit provider</span>
+                    </div>
+                    <div class="trust-row">
+                        <strong>Since 2016</strong>
+                        <span>Serving South African consumers</span>
+                    </div>
+                </aside>
+            </article>
+
+            <article class="home-hero-design home-hero-design--credit" data-home-hero-design="1" aria-hidden="true">
+                <div class="hero-copy">
+                    <span class="hero-kicker"><i class="fa-solid fa-hand-holding-heart" aria-hidden="true"></i> Credit assistance</span>
+                    <h1>Declined for credit? <em>You may still have options.</em></h1>
+                    <p>If you were declined for vehicle finance, a personal loan, home loan, retail credit, a cellphone contract or another credit application, tell us what happened and we will contact you to discuss your next step.</p>
+                    <div class="hero-actions">
+                        <a class="button button-accent" href="<?= h(site_url('credit-assistance.php')) ?>">Get Credit Assistance <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+                        <a class="button button-ghost" href="https://wa.me/<?= h($site['whatsapp_link']) ?>?text=Hello%20IY%20Finance%20Solutions%2C%20I%20was%20declined%20for%20credit%20and%20would%20like%20assistance." target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i> WhatsApp our team</a>
+                    </div>
+                </div>
+
+                <aside class="hero-trust-card hero-credit-card" aria-label="Credit assistance information">
+                    <span class="trust-label">We can start with a simple conversation</span>
+                    <div class="trust-row">
+                        <strong>Tell us what happened</strong>
+                        <span>No need to know exactly why your application was declined.</span>
+                    </div>
+                    <div class="trust-row">
+                        <strong>We contact you</strong>
+                        <span>Give us your details and a consultant can follow up with you.</span>
+                    </div>
+                    <div class="trust-row">
+                        <strong>Discuss your options</strong>
+                        <span>We can guide the conversation from the information you provide.</span>
+                    </div>
+                </aside>
+            </article>
         </div>
 
-        <aside class="hero-trust-card" aria-label="Company credentials">
-            <span class="trust-label">Licensed. Registered. Client-focused.</span>
-            <div class="trust-row">
-                <strong>FSP <?= h($site['fsp']) ?></strong>
-                <span>Licensed financial services provider</span>
-            </div>
-            <div class="trust-row">
-                <strong>NCRCP <?= h($site['ncrcp']) ?></strong>
-                <span>Registered credit provider</span>
-            </div>
-            <div class="trust-row">
-                <strong>Since 2016</strong>
-                <span>Serving South African consumers</span>
-            </div>
-        </aside>
+        <div class="home-hero-switcher" aria-label="Hero sections">
+            <button type="button" class="home-hero-dot is-active" data-home-hero-dot="0" aria-label="Show main financial services introduction" aria-pressed="true"></button>
+            <button type="button" class="home-hero-dot" data-home-hero-dot="1" aria-label="Show credit assistance introduction" aria-pressed="false"></button>
+            <span class="home-hero-timer" aria-hidden="true"><span></span></span>
+        </div>
     </div>
     <a class="scroll-cue" href="#services"><span>Discover more</span><i class="fa-solid fa-arrow-down" aria-hidden="true"></i></a>
 </section>
@@ -251,6 +289,6 @@ require PROJECT_ROOT . '/includes/header.php';
         </div>
     </div>
 </section>
-
+ <?php require PROJECT_ROOT . '/includes/promotion-popup.php'; ?>
 <?php require PROJECT_ROOT . '/includes/footer.php'; ?>
 

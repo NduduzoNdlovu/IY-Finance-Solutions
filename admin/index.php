@@ -71,6 +71,21 @@ require PROJECT_ROOT . '/includes/admin-header.php';
         </div>
     </article>
 
+    <article class="admin-hub-card">
+        <i class="fa-solid fa-phone-volume" aria-hidden="true"></i>
+
+        <div>
+            <h2>Credit Enquiries</h2>
+
+            <p>Review declined-credit enquiries and update call statuses.</p>
+
+            <a href="<?= h(site_url('admin/credit-enquiries')) ?>">
+                View enquiries
+                <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+            </a>
+        </div>
+    </article>
+
 </nav>
 
 <div class="admin-shell dashboard-header" id="gallery-management">

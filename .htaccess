@@ -5,6 +5,8 @@ Options -Indexes
     RewriteEngine On
 
     RewriteRule ^index\.html$ index.php [R=301,L,NE]
+    RewriteRule ^credit-assistance/?$ credit-assistance.php [L,QSA]
+    RewriteRule ^admin/credit-enquiries/?$ admin/credit-enquiries.php [L,QSA]
     RewriteRule ^(.+)\.html$ $1.php [R=301,L,NE]
 </IfModule>
 

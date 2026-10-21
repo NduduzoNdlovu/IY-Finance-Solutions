@@ -1,0 +1,243 @@
+.credit-enquiries-page {
+    padding-top: 34px;
+}
+
+.credit-enquiries-page .dashboard-header {
+    margin-top: 0;
+}
+
+.credit-enquiries-page .dashboard-header .admin-button {
+    margin-top: 0;
+    white-space: nowrap;
+}
+
+.credit-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 24px;
+}
+
+.credit-stats article {
+    padding: 19px 20px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: var(--white);
+    box-shadow: 0 10px 30px rgba(5,45,34,.05);
+}
+
+.credit-stats span,
+.credit-stats strong {
+    display: block;
+}
+
+.credit-stats span {
+    color: var(--muted);
+    font-size: .74rem;
+    font-weight: 750;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+}
+
+.credit-stats strong {
+    margin-top: 4px;
+    color: var(--green-950);
+    font-size: 1.9rem;
+}
+
+.credit-list-card {
+    padding: 0;
+    overflow: hidden;
+}
+
+.credit-filters {
+    display: grid;
+    grid-template-columns: minmax(240px, 1fr) 210px auto auto;
+    gap: 12px;
+    align-items: end;
+    padding: 20px;
+    border-bottom: 1px solid var(--line);
+    background: #f8fbf9;
+}
+
+.credit-filters label {
+    display: grid;
+    gap: 6px;
+    color: var(--green-900);
+    font-size: .75rem;
+    font-weight: 800;
+}
+
+.credit-filters input,
+.credit-filters select,
+.credit-status-form select {
+    min-height: 42px;
+    width: 100%;
+    border: 1px solid #d4e1db;
+    border-radius: 10px;
+    padding: 8px 11px;
+    color: var(--ink);
+    background: var(--white);
+    font: inherit;
+    font-size: .8rem;
+    outline: none;
+}
+
+.credit-filters input:focus,
+.credit-filters select:focus,
+.credit-status-form select:focus {
+    border-color: var(--green-600);
+    box-shadow: 0 0 0 3px rgba(20,173,125,.1);
+}
+
+.credit-filters .admin-button {
+    min-height: 42px;
+    margin-top: 0;
+}
+
+.credit-clear-filter {
+    align-self: center;
+    color: var(--green-700);
+    font-size: .8rem;
+    font-weight: 800;
+}
+
+.credit-table-wrap {
+    overflow-x: auto;
+}
+
+.credit-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 1040px;
+}
+
+.credit-table th,
+.credit-table td {
+    padding: 15px 16px;
+    border-bottom: 1px solid #e4ece8;
+    text-align: left;
+    vertical-align: top;
+    font-size: .8rem;
+}
+
+.credit-table th {
+    color: #587067;
+    background: #f8fbf9;
+    font-size: .68rem;
+    font-weight: 850;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.credit-table tbody tr:not(.credit-message-row):hover {
+    background: #fbfdfc;
+}
+
+.credit-table td strong {
+    color: var(--green-950);
+}
+
+.credit-phone,
+.credit-email {
+    display: block;
+}
+
+.credit-phone {
+    color: var(--green-700);
+    font-weight: 800;
+}
+
+.credit-email {
+    max-width: 180px;
+    margin-top: 3px;
+    overflow-wrap: anywhere;
+    color: var(--muted);
+    font-size: .7rem;
+}
+
+.credit-status-form select {
+    min-width: 132px;
+}
+
+.credit-call-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 36px;
+    padding: 7px 11px;
+    border-radius: 9px;
+    color: var(--green-950);
+    background: var(--lime);
+    font-size: .74rem;
+    font-weight: 850;
+}
+
+.credit-call-button:hover {
+    background: #b1e36a;
+}
+
+.credit-message-row td {
+    padding-top: 0;
+    color: #687971;
+    background: #fbfdfc;
+    font-size: .75rem;
+}
+
+.credit-message-row i {
+    margin-right: 5px;
+    color: var(--green-600);
+}
+
+.credit-empty {
+    padding: 75px 30px;
+    text-align: center;
+}
+
+.credit-empty > i {
+    color: var(--green-600);
+    font-size: 2rem;
+}
+
+.credit-empty h2 {
+    margin: 14px 0 5px;
+    color: var(--green-950);
+}
+
+.credit-empty p {
+    margin: 0;
+}
+
+@media (max-width: 900px) {
+    .credit-stats {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .credit-filters {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 680px) {
+    .credit-enquiries-page {
+        padding-top: 18px;
+    }
+
+    .credit-enquiries-page .dashboard-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .credit-enquiries-page .dashboard-header .admin-button {
+        width: 100%;
+    }
+
+    .credit-stats {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .credit-filters {
+        grid-template-columns: 1fr;
+    }
+}

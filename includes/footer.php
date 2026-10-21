@@ -77,7 +77,7 @@ $servicesForFooter = require PROJECT_ROOT . '/config/services.php';
 <a class="floating-whatsapp" href="https://wa.me/<?= h($site['whatsapp_link']) ?>?text=Hello%20IY%20Finance%20Solutions%2C%20I%20would%20like%20assistance." target="_blank" rel="noopener" aria-label="Chat with IY Finance Solutions on WhatsApp">
     <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
 </a>
-
+   <script src="<?= h(asset_url('js/promotion-popup.js')) ?>" defer></script>
 <script src="<?= h(asset_url('js/main.js')) ?>" defer></script>
 <?php if (!empty($pageScript)): ?>
     <script src="<?= h(asset_url('js/' . $pageScript)) ?>" defer></script>

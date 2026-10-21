@@ -38,6 +38,9 @@ $isAuthenticated = admin_is_logged_in();
 <a href="<?= h(site_url('admin/events.php')) ?>">
     <i class="fa-regular fa-calendar" aria-hidden="true"></i> Events
 </a>
+<a href="<?= h(site_url('admin/credit-enquiries.php')) ?>">
+    <i class="fa-solid fa-phone-volume" aria-hidden="true"></i> Credit enquiries
+</a>
                 <form action="<?= h(site_url('admin/logout.php')) ?>" method="post">
                     <input type="hidden" name="csrf_token" value="<?= h(csrf_token()) ?>">
                     <button type="submit"><i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i> Sign out</button>

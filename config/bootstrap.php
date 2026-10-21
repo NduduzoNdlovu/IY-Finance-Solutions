@@ -5,6 +5,7 @@ define('PROJECT_ROOT', dirname(__DIR__));
 define('GALLERY_DIRECTORY', PROJECT_ROOT . '/uploads/gallery');
 define('STORAGE_DIRECTORY', PROJECT_ROOT . '/storage');
 define('ADMIN_RECORD_FILE', STORAGE_DIRECTORY . '/admin.json');
+define('CREDIT_ENQUIRIES_FILE', STORAGE_DIRECTORY . '/credit-enquiries.json');
 
 $site = [
     'name' => 'IY Finance Solutions',

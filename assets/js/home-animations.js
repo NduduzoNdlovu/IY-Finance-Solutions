@@ -9,6 +9,62 @@
         });
     });
 
+
+
+    const heroDesigns = Array.from(document.querySelectorAll("[data-home-hero-design]"));
+    const heroDots = Array.from(document.querySelectorAll("[data-home-hero-dot]"));
+    const heroTimer = document.querySelector(".home-hero-timer");
+    const heroSwitcher = document.querySelector("[data-home-hero-designs]");
+    const heroInterval = 8000;
+    let heroIndex = 0;
+    let heroTimeout = null;
+
+    const setHeroDesign = (index, restart = true) => {
+        if (!heroDesigns.length) return;
+        heroIndex = ((index % heroDesigns.length) + heroDesigns.length) % heroDesigns.length;
+
+        heroDesigns.forEach((design, designIndex) => {
+            const active = designIndex === heroIndex;
+            design.classList.toggle("is-active", active);
+            design.setAttribute("aria-hidden", active ? "false" : "true");
+        });
+
+        heroDots.forEach((dot, dotIndex) => {
+            const active = dotIndex === heroIndex;
+            dot.classList.toggle("is-active", active);
+            dot.setAttribute("aria-pressed", active ? "true" : "false");
+        });
+
+        if (heroTimer) {
+            heroTimer.classList.remove("is-running");
+            void heroTimer.offsetWidth;
+            if (!reduceMotion) heroTimer.classList.add("is-running");
+        }
+
+        if (restart && !reduceMotion) {
+            window.clearTimeout(heroTimeout);
+            heroTimeout = window.setTimeout(() => setHeroDesign(heroIndex + 1), heroInterval);
+        }
+    };
+
+    if (heroDesigns.length > 1) {
+        setHeroDesign(0);
+
+        heroDots.forEach((dot) => {
+            dot.addEventListener("click", () => {
+                setHeroDesign(Number.parseInt(dot.dataset.homeHeroDot ?? "0", 10));
+            });
+        });
+
+        if (heroSwitcher && !reduceMotion) {
+            heroSwitcher.addEventListener("mouseenter", () => window.clearTimeout(heroTimeout));
+            heroSwitcher.addEventListener("mouseleave", () => {
+                window.clearTimeout(heroTimeout);
+                heroTimeout = window.setTimeout(() => setHeroDesign(heroIndex + 1), heroInterval);
+            });
+        }
+    }
+
     const counters = document.querySelectorAll("[data-count-to]");
     if (reduceMotion || !("IntersectionObserver" in window)) {
         counters.forEach((counter) => {
