@@ -50,6 +50,8 @@ $servicesForFooter = require PROJECT_ROOT . '/config/services.php';
                 <li><a href="<?= h(site_url('index.php#process')) ?>">How it works</a></li>
                 <li><a href="<?= h(site_url('updates.php')) ?>">News & updates</a></li>
 <li><a href="<?= h(site_url('events.php')) ?>">Events calendar</a></li>
+                <li><a href="<?= h(site_url('client-reviews.php')) ?>">Client reviews</a></li>
+                <li><a href="<?= h(site_url('feedback.php')) ?>">Share feedback</a></li>
                 <li><a href="<?= h(site_url('index.php#faq')) ?>">Frequently asked questions</a></li>
                 <li><a href="<?= h(site_url('contact.php')) ?>">Contact us</a></li>
                 <li><a href="<?= h(site_url('admin/')) ?>">Administrator</a></li>

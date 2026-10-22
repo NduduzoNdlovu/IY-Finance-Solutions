@@ -1,0 +1,1264 @@
+diff --git a/.htaccess b/.htaccess
+index 3014001..01cb035 100644
+--- a/.htaccess
++++ b/.htaccess
+@@ -6,6 +6,9 @@ Options -Indexes
+ 
+     RewriteRule ^index\.html$ index.php [R=301,L,NE]
+     RewriteRule ^credit-assistance/?$ credit-assistance.php [L,QSA]
++    RewriteRule ^feedback/?$ feedback.php [L,QSA]
++    RewriteRule ^client-reviews/?$ client-reviews.php [L,QSA]
++    RewriteRule ^admin/feedback/?$ admin/feedback.php [L,QSA]
+     RewriteRule ^admin/credit-enquiries/?$ admin/credit-enquiries.php [L,QSA]
+     RewriteRule ^r/(IYF-[0-9]{8}-[A-Fa-f0-9]{6})/?$ referral.php?ref=$1 [L,QSA,NC]
+     RewriteRule ^(.+)\.html$ $1.php [R=301,L,NE]
+diff --git a/admin/feedback-action.php b/admin/feedback-action.php
+new file mode 100644
+index 0000000..d9f2541
+--- /dev/null
++++ b/admin/feedback-action.php
+@@ -0,0 +1,63 @@
++<?php
++declare(strict_types=1);
++
++require dirname(__DIR__) . '/config/bootstrap.php';
++require PROJECT_ROOT . '/config/client-feedback.php';
++require_admin();
++
++if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
++    redirect_to('admin/feedback.php');
++}
++if (!csrf_is_valid($_POST['csrf_token'] ?? null)) {
++    flash_message('error', 'Your session expired. Please try again.');
++    redirect_to('admin/feedback.php');
++}
++
++$id = trim((string) ($_POST['id'] ?? ''));
++$action = trim((string) ($_POST['action'] ?? ''));
++if ($id === '' || !in_array($action, ['approve', 'reject', 'delete'], true)) {
++    flash_message('error', 'The feedback action was not valid.');
++    redirect_to('admin/feedback.php');
++}
++
++$found = false;
++$consentBlocked = false;
++$updated = client_feedback_mutate(static function (array &$records) use ($id, $action, &$found, &$consentBlocked): bool {
++    foreach ($records as $index => &$record) {
++        if (($record['id'] ?? '') !== $id) {
++            continue;
++        }
++        $found = true;
++        if ($action === 'delete') {
++            unset($records[$index]);
++            $records = array_values($records);
++            return true;
++        }
++        if ($action === 'approve' && empty($record['publication_consent'])) {
++            $consentBlocked = true;
++            return false;
++        }
++        $record['status'] = $action === 'approve' ? 'approved' : 'rejected';
++        $record['reviewed_at'] = gmdate('c');
++        $record['reviewed_by'] = (string) ($_SESSION['admin_username'] ?? 'administrator');
++        return true;
++    }
++    unset($record);
++    return false;
++});
++
++if ($consentBlocked) {
++    flash_message('error', 'This feedback cannot be published because the client has not given publication permission.');
++} elseif (!$found) {
++    flash_message('error', 'The feedback record could not be found.');
++} elseif (!$updated) {
++    flash_message('error', 'The feedback could not be updated. Please try again.');
++} else {
++    $message = match ($action) {
++        'approve' => 'Feedback approved and published.',
++        'reject' => 'Feedback rejected or unpublished. It will no longer appear publicly.',
++        'delete' => 'Feedback record deleted.',
++    };
++    flash_message('success', $message);
++}
++redirect_to('admin/feedback.php');
+diff --git a/admin/feedback.php b/admin/feedback.php
+new file mode 100644
+index 0000000..09b766e
+--- /dev/null
++++ b/admin/feedback.php
+@@ -0,0 +1,102 @@
++<?php
++declare(strict_types=1);
++
++require dirname(__DIR__) . '/config/bootstrap.php';
++require PROJECT_ROOT . '/config/client-feedback.php';
++require_admin();
++
++$records = client_feedback_read();
++$statusLabels = ['pending' => 'Pending review', 'approved' => 'Approved', 'rejected' => 'Rejected'];
++$adminTitle = 'Client feedback';
++$adminPageStyles = ['css/admin-feedback.css'];
++
++$search = trim((string) ($_GET['q'] ?? ''));
++$statusFilter = trim((string) ($_GET['status'] ?? ''));
++$filtered = array_values(array_filter($records, static function (array $record) use ($search, $statusFilter): bool {
++    if ($statusFilter !== '' && ($record['status'] ?? 'pending') !== $statusFilter) {
++        return false;
++    }
++    if ($search === '') {
++        return true;
++    }
++    $haystack = implode(' ', [
++        (string) ($record['name'] ?? ''),
++        (string) ($record['email'] ?? ''),
++        (string) ($record['service'] ?? ''),
++        (string) ($record['language'] ?? ''),
++        (string) ($record['feedback'] ?? ''),
++    ]);
++    return stripos($haystack, $search) !== false;
++}));
++usort($filtered, static fn (array $left, array $right): int => strcmp((string) ($right['created_at'] ?? ''), (string) ($left['created_at'] ?? '')));
++
++$pendingCount = count(array_filter($records, static fn (array $r): bool => ($r['status'] ?? 'pending') === 'pending'));
++$approvedCount = count(array_filter($records, static fn (array $r): bool => ($r['status'] ?? '') === 'approved'));
++$consentCount = count(array_filter($records, static fn (array $r): bool => ($r['publication_consent'] ?? false) === true));
++
++require PROJECT_ROOT . '/includes/admin-header.php';
++?>
++<section class="admin-shell feedback-admin-page">
++    <div class="dashboard-header">
++        <div>
++            <span class="admin-eyebrow">Customer experience</span>
++            <h1>Client feedback</h1>
++            <p>Review feedback privately. Only publish testimonials when the client has given publication permission.</p>
++        </div>
++        <a class="admin-button" href="<?= h(site_url('client-reviews.php')) ?>" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i> View public reviews</a>
++    </div>
++
++    <div class="feedback-admin-stats">
++        <article><span>All submissions</span><strong><?= count($records) ?></strong></article>
++        <article><span>Pending review</span><strong><?= $pendingCount ?></strong></article>
++        <article><span>Approved</span><strong><?= $approvedCount ?></strong></article>
++        <article><span>Publication consent</span><strong><?= $consentCount ?></strong></article>
++    </div>
++
++    <section class="admin-card feedback-admin-list">
++        <form class="feedback-admin-filters" method="get" action="<?= h(site_url('admin/feedback.php')) ?>">
++            <label><span>Search feedback</span><input type="search" name="q" value="<?= h($search) ?>" placeholder="Name, service, language or message"></label>
++            <label><span>Status</span><select name="status"><option value="">All statuses</option><?php foreach ($statusLabels as $value => $label): ?><option value="<?= h($value) ?>" <?= $statusFilter === $value ? 'selected' : '' ?>><?= h($label) ?></option><?php endforeach; ?></select></label>
++            <button class="admin-button primary" type="submit"><i class="fa-solid fa-filter" aria-hidden="true"></i> Filter</button>
++            <?php if ($search !== '' || $statusFilter !== ''): ?><a class="feedback-admin-clear" href="<?= h(site_url('admin/feedback.php')) ?>">Clear</a><?php endif; ?>
++        </form>
++
++        <?php if ($filtered === []): ?>
++            <div class="feedback-admin-empty"><i class="fa-regular fa-comments" aria-hidden="true"></i><h2>No feedback found</h2><p>New client submissions will appear here for private review.</p></div>
++        <?php else: ?>
++            <div class="feedback-admin-cards">
++                <?php foreach ($filtered as $record): ?>
++                    <article class="feedback-admin-record">
++                        <header class="feedback-record-header">
++                            <div>
++                                <span class="feedback-status status-<?= h((string) ($record['status'] ?? 'pending')) ?>"><?= h($statusLabels[(string) ($record['status'] ?? 'pending')] ?? 'Pending review') ?></span>
++                                <h2><?= h(trim((string) ($record['name'] ?? '')) !== '' ? (string) $record['name'] : 'Anonymous client') ?></h2>
++                                <p><?= h((string) ($record['service'] ?? 'Service not specified')) ?><?= trim((string) ($record['language'] ?? '')) !== '' ? ' · ' . h((string) $record['language']) : '' ?> · <?= h((string) ($record['created_at'] ?? '')) ?></p>
++                            </div>
++                            <?php if (isset($record['rating']) && is_int($record['rating']) && $record['rating'] >= 1 && $record['rating'] <= 5): ?><span class="feedback-admin-rating"><i class="fa-solid fa-star" aria-hidden="true"></i> <?= (int) $record['rating'] ?>/5</span><?php else: ?><span class="feedback-admin-no-rating">No rating</span><?php endif; ?>
++                        </header>
++                        <div class="feedback-record-message"><?= nl2br(h((string) ($record['feedback'] ?? ''))) ?></div>
++                        <dl class="feedback-record-meta">
++                            <div><dt>Contact email</dt><dd><?= trim((string) ($record['email'] ?? '')) !== '' ? h((string) $record['email']) : 'Not provided' ?></dd></div>
++                            <div><dt>Publication permission</dt><dd><?= !empty($record['publication_consent']) ? 'Yes' : 'No — keep private' ?></dd></div>
++                            <div><dt>Name display permission</dt><dd><?= !empty($record['display_name_consent']) ? 'Yes, name may be shown' : 'No, display anonymously' ?></dd></div>
++                        </dl>
++                        <?php if (!empty($record['reviewed_at'])): ?><p class="feedback-record-review-note">Reviewed <?= h((string) $record['reviewed_at']) ?><?= !empty($record['reviewed_by']) ? ' by ' . h((string) $record['reviewed_by']) : '' ?>.</p><?php endif; ?>
++                        <div class="feedback-record-actions">
++                            <?php if (($record['status'] ?? 'pending') !== 'approved' && !empty($record['publication_consent'])): ?>
++                                <form method="post" action="<?= h(site_url('admin/feedback-action.php')) ?>"><input type="hidden" name="csrf_token" value="<?= h(csrf_token()) ?>"><input type="hidden" name="id" value="<?= h((string) $record['id']) ?>"><input type="hidden" name="action" value="approve"><button class="admin-button primary" type="submit"><i class="fa-solid fa-check" aria-hidden="true"></i> Approve & publish</button></form>
++                            <?php elseif (($record['status'] ?? '') !== 'approved'): ?>
++                                <span class="feedback-no-consent-note"><i class="fa-solid fa-lock" aria-hidden="true"></i> Publication consent is required before this can be published.</span>
++                            <?php else: ?>
++                                <span class="feedback-published-note"><i class="fa-solid fa-eye" aria-hidden="true"></i> Published on the public reviews page.</span>
++                            <?php endif; ?>
++                            <?php if (($record['status'] ?? '') !== 'rejected'): ?><form method="post" action="<?= h(site_url('admin/feedback-action.php')) ?>"><input type="hidden" name="csrf_token" value="<?= h(csrf_token()) ?>"><input type="hidden" name="id" value="<?= h((string) $record['id']) ?>"><input type="hidden" name="action" value="reject"><button class="admin-button" type="submit"><i class="fa-solid fa-ban" aria-hidden="true"></i> Reject / unpublish</button></form><?php endif; ?>
++                            <form method="post" action="<?= h(site_url('admin/feedback-action.php')) ?>" data-delete-form><input type="hidden" name="csrf_token" value="<?= h(csrf_token()) ?>"><input type="hidden" name="id" value="<?= h((string) $record['id']) ?>"><input type="hidden" name="action" value="delete"><button class="admin-button danger" type="submit"><i class="fa-solid fa-trash-can" aria-hidden="true"></i> Delete</button></form>
++                        </div>
++                    </article>
++                <?php endforeach; ?>
++            </div>
++        <?php endif; ?>
++    </section>
++</section>
++<?php require PROJECT_ROOT . '/includes/admin-footer.php'; ?>
+diff --git a/admin/index.php b/admin/index.php
+index afe3a08..32036ae 100644
+--- a/admin/index.php
++++ b/admin/index.php
+@@ -3,15 +3,25 @@ declare(strict_types=1);
+ 
+ require dirname(__DIR__) . '/config/bootstrap.php';
+ require PROJECT_ROOT . '/config/content.php';
++require PROJECT_ROOT . '/config/client-feedback.php';
+ require_admin();
+ 
+ $images = gallery_images();
+-$adminTitle = 'Manage gallery';
++$adminTitle = 'Website dashboard';
+ $adminPageStyles = ['css/content-admin.css'];
+ $updatesTotal = count(content_read_records(UPDATES_RECORD_FILE));
+ $eventsTotal = count(content_read_records(EVENTS_RECORD_FILE));
++$feedbackRecords = client_feedback_read();
++$pendingFeedbackTotal = count(array_filter($feedbackRecords, static fn (array $record): bool => ($record['status'] ?? 'pending') === 'pending'));
+ require PROJECT_ROOT . '/includes/admin-header.php';
+ ?>
++<section class="admin-shell admin-dashboard-intro">
++    <div>
++        <span class="admin-eyebrow">Administration overview</span>
++        <h1>Website dashboard</h1>
++        <p>Choose an area below to manage website content, enquiries and client feedback.</p>
++    </div>
++</section>
+ <nav class="admin-shell admin-hub" aria-label="Website management areas">
+ 
+     <article class="admin-hub-card">
+@@ -86,12 +96,30 @@ require PROJECT_ROOT . '/includes/admin-header.php';
+         </div>
+     </article>
+ 
++    <article class="admin-hub-card">
++        <i class="fa-solid fa-qrcode" aria-hidden="true"></i>
++        <div>
++            <h2>QR Referrals</h2>
++            <p>Manage referral links and review QR scan activity.</p>
++            <a href="<?= h(site_url('admin/referrals.php')) ?>">Manage referrals <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
++        </div>
++    </article>
++
++    <article class="admin-hub-card">
++        <i class="fa-solid fa-comments" aria-hidden="true"></i>
++        <div>
++            <h2>Client Feedback</h2>
++            <p><?= $pendingFeedbackTotal ?> pending <?= $pendingFeedbackTotal === 1 ? 'submission' : 'submissions' ?> awaiting review.</p>
++            <a href="<?= h(site_url('admin/feedback.php')) ?>">Review feedback <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
++        </div>
++    </article>
++
+ </nav>
+ 
+ <div class="admin-shell dashboard-header" id="gallery-management">
+ <!-- <div class="admin-shell dashboard-header"> -->
+     <div>
+-        <span class="admin-eyebrow">Gallery dashboard</span>
++        <span class="admin-eyebrow">Gallery management</span>
+         <h1>Manage website photographs</h1>
+         <p>Upload new pictures or remove images that should no longer appear in the public gallery.</p>
+     </div>
+@@ -156,4 +184,3 @@ require PROJECT_ROOT . '/includes/admin-header.php';
+ </section>
+ 
+ <?php require PROJECT_ROOT . '/includes/admin-footer.php'; ?>
+-
+diff --git a/assets/css/admin-feedback.css b/assets/css/admin-feedback.css
+new file mode 100644
+index 0000000..57c9388
+--- /dev/null
++++ b/assets/css/admin-feedback.css
+@@ -0,0 +1,3 @@
++.feedback-admin-page{padding-top:34px;padding-bottom:50px}.feedback-admin-page .dashboard-header{margin-top:0}.feedback-admin-page .dashboard-header .admin-button{margin-top:0;white-space:nowrap}.feedback-admin-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:24px}.feedback-admin-stats article{padding:18px 20px;border:1px solid var(--line);border-radius:12px;background:var(--white);box-shadow:0 8px 25px rgba(5,45,34,.04)}.feedback-admin-stats span,.feedback-admin-stats strong{display:block}.feedback-admin-stats span{color:var(--muted);font-size:.72rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase}.feedback-admin-stats strong{margin-top:6px;color:var(--green-950);font-size:1.8rem}.feedback-admin-list{padding:0;overflow:hidden}.feedback-admin-filters{display:grid;grid-template-columns:minmax(240px,1fr) 210px auto auto;gap:12px;align-items:end;padding:20px;border-bottom:1px solid var(--line);background:#f8fbf9}.feedback-admin-filters label{display:grid;gap:6px;color:var(--green-900);font-size:.75rem;font-weight:800}.feedback-admin-filters input,.feedback-admin-filters select{width:100%;min-height:42px;padding:8px 11px;border:1px solid #d4e1db;border-radius:7px;background:#fff;color:var(--ink);font:inherit;font-size:.82rem}.feedback-admin-filters .admin-button{min-height:42px;margin:0}.feedback-admin-clear{align-self:center;color:var(--green-700);font-size:.8rem;font-weight:800}.feedback-admin-cards{display:grid;gap:0}.feedback-admin-record{padding:23px;border-bottom:1px solid #e4ece8}.feedback-admin-record:last-child{border-bottom:0}.feedback-record-header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px}.feedback-record-header h2{margin:9px 0 5px;color:var(--green-950);font-size:1.15rem}.feedback-record-header p{margin:0;color:var(--muted);font-size:.78rem;line-height:1.6;overflow-wrap:anywhere}.feedback-status{display:inline-flex;padding:5px 9px;border-radius:4px;font-size:.7rem;font-weight:850}.status-pending{color:#81520a;background:#fff4d9}.status-approved{color:#1c663a;background:#e7f6ec}.status-rejected{color:#8b2626;background:#ffeded}.feedback-admin-rating,.feedback-admin-no-rating{white-space:nowrap;color:#8b6500;font-size:.8rem;font-weight:800}.feedback-admin-rating i{color:#c38a08}.feedback-admin-no-rating{color:var(--muted);font-weight:600}.feedback-record-message{margin:19px 0;padding:17px;border:1px solid #e5ece8;border-radius:6px;background:#fbfdfc;color:#2f3c35;font-size:.9rem;line-height:1.75;overflow-wrap:anywhere}.feedback-record-meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0}.feedback-record-meta div{min-width:0}.feedback-record-meta dt{margin-bottom:4px;color:var(--muted);font-size:.68rem;font-weight:850;letter-spacing:.04em;text-transform:uppercase}.feedback-record-meta dd{margin:0;color:var(--ink);font-size:.8rem;overflow-wrap:anywhere}.feedback-record-review-note{margin:13px 0 0;color:var(--muted);font-size:.75rem}.feedback-record-actions{display:flex;align-items:center;flex-wrap:wrap;gap:9px;margin-top:20px}.feedback-record-actions form{margin:0}.feedback-record-actions .admin-button{display:inline-flex;align-items:center;gap:7px;min-height:36px;padding:8px 11px;font-size:.75rem}.feedback-record-actions .admin-button.danger{border-color:#edcccc;color:#8b2626;background:#fff6f6}.feedback-no-consent-note,.feedback-published-note{display:inline-flex;align-items:center;gap:7px;color:var(--muted);font-size:.76rem}.feedback-published-note{color:#1c663a}.feedback-admin-empty{padding:65px 25px;text-align:center}.feedback-admin-empty>i{color:var(--green-700);font-size:2rem}.feedback-admin-empty h2{margin:14px 0 6px;color:var(--green-950)}.feedback-admin-empty p{margin:0;color:var(--muted)}
++@media(max-width:900px){.feedback-admin-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.feedback-admin-filters{grid-template-columns:1fr 1fr}.feedback-admin-filters label:first-child{grid-column:1/-1}.feedback-record-meta{grid-template-columns:1fr 1fr}}
++@media(max-width:600px){.feedback-admin-page{padding-top:22px}.feedback-admin-page .dashboard-header{align-items:flex-start;flex-direction:column;gap:12px}.feedback-admin-stats{gap:9px}.feedback-admin-stats article{padding:14px}.feedback-admin-filters{grid-template-columns:1fr;padding:15px}.feedback-admin-filters label:first-child{grid-column:auto}.feedback-admin-record{padding:17px 14px}.feedback-record-header{gap:10px}.feedback-record-header p{max-width:260px}.feedback-record-meta{grid-template-columns:1fr}.feedback-record-actions{align-items:stretch;flex-direction:column}.feedback-record-actions form,.feedback-record-actions form .admin-button{width:100%}.feedback-record-actions .admin-button{justify-content:center}}
+diff --git a/assets/css/admin.css b/assets/css/admin.css
+index 9f36ad7..547d677 100644
+--- a/assets/css/admin.css
++++ b/assets/css/admin.css
+@@ -816,4 +816,364 @@ label:focus-within {
+         justify-content: center;
+         gap: 4px;
+     }
+-}
+\ No newline at end of file
++}
++
++/* Shared administration shell: compact top bar and persistent side navigation. */
++body.admin-body {
++    display: block;
++    min-height: 100vh;
++    padding-top: 74px;
++    background: #f5f8f6;
++}
++
++.admin-header {
++    position: fixed;
++    inset: 0 0 auto;
++    z-index: 1100;
++    width: 100%;
++    height: 74px;
++    color: var(--white);
++    background: var(--green-950);
++    box-shadow: 0 4px 18px rgba(5, 45, 34, .12);
++}
++
++.admin-topbar {
++    display: flex;
++    width: 100%;
++    height: 74px;
++    align-items: center;
++    gap: 18px;
++    padding: 0 28px;
++}
++
++.admin-topbar .admin-brand {
++    margin-right: auto;
++}
++
++.admin-topbar-actions {
++    display: flex;
++    align-items: center;
++    gap: 10px;
++}
++
++.admin-topbar-actions a {
++    display: inline-flex;
++    min-height: 39px;
++    align-items: center;
++    justify-content: center;
++    gap: 9px;
++    padding: 9px 13px;
++    border: 1px solid rgba(255,255,255,.2);
++    border-radius: 5px;
++    color: #edf5f1;
++    background: rgba(255,255,255,.06);
++    font-size: .78rem;
++    font-weight: 700;
++}
++
++.admin-topbar-actions a:hover {
++    color: var(--green-950);
++    background: var(--lime);
++}
++
++.admin-menu-toggle,
++.admin-sidebar-toggle-input {
++    display: none;
++}
++
++.admin-sidebar {
++    position: fixed;
++    z-index: 1050;
++    top: 74px;
++    bottom: 0;
++    left: 0;
++    display: flex;
++    width: 248px;
++    flex-direction: column;
++    padding: 25px 15px 17px;
++    overflow-y: auto;
++    border-right: 1px solid #dce6e1;
++    background: #fff;
++}
++
++.admin-sidebar-heading {
++    padding: 0 12px 12px;
++    color: #718078;
++    font-size: .65rem;
++    font-weight: 800;
++    letter-spacing: .14em;
++}
++
++.admin-sidebar-nav {
++    display: grid;
++    gap: 5px;
++}
++
++.admin-sidebar-nav a,
++.admin-sidebar-bottom form button {
++    display: flex;
++    width: 100%;
++    min-height: 45px;
++    align-items: center;
++    gap: 12px;
++    padding: 10px 12px;
++    border: 1px solid transparent;
++    border-radius: 5px;
++    color: #3e5048;
++    background: transparent;
++    font-size: .82rem;
++    font-weight: 650;
++    text-align: left;
++    transition: background .15s ease, color .15s ease;
++}
++
++.admin-sidebar-nav a i,
++.admin-sidebar-bottom form button i {
++    width: 18px;
++    color: #63756c;
++    text-align: center;
++}
++
++.admin-sidebar-nav a:hover,
++.admin-sidebar-bottom form button:hover {
++    color: var(--green-950);
++    background: #f1f6f3;
++}
++
++.admin-sidebar-nav a.is-active {
++    border-color: #d9e8df;
++    color: var(--green-950);
++    background: #eaf3ed;
++    font-weight: 800;
++}
++
++.admin-sidebar-nav a.is-active i {
++    color: var(--green-700);
++}
++
++.admin-sidebar-bottom {
++    display: grid;
++    gap: 12px;
++    margin-top: auto;
++    padding-top: 20px;
++    border-top: 1px solid #e6ece8;
++}
++
++.admin-sidebar-account {
++    display: flex;
++    align-items: center;
++    gap: 9px;
++    padding: 0 12px;
++    color: #718078;
++    font-size: .72rem;
++    font-weight: 700;
++}
++
++.admin-sidebar-account i {
++    color: var(--green-700);
++}
++
++.admin-sidebar-bottom form {
++    margin: 0;
++}
++
++.admin-sidebar-bottom form button {
++    cursor: pointer;
++}
++
++.admin-sidebar-bottom form button i {
++    color: #a13b35;
++}
++
++.admin-workspace {
++    min-height: calc(100vh - 74px);
++    margin-left: 248px;
++    display: flex;
++    flex-direction: column;
++}
++
++.admin-guest .admin-workspace {
++    margin-left: 0;
++}
++
++.admin-main {
++    width: 100%;
++    flex: 1;
++    padding: 28px 0 64px;
++}
++
++.admin-workspace > .flash {
++    width: min(1160px, calc(100% - 48px));
++    margin-top: 20px;
++}
++
++.admin-footer {
++    margin-top: auto;
++}
++
++.admin-dashboard-intro {
++    margin-top: 8px;
++    margin-bottom: 28px;
++}
++
++.admin-dashboard-intro h1 {
++    margin: 0 0 10px;
++    color: var(--green-950);
++    font-size: clamp(1.8rem, 3vw, 2.5rem);
++}
++
++.admin-dashboard-intro p {
++    max-width: 680px;
++    margin-bottom: 0;
++}
++
++.admin-hub-card {
++    min-height: 160px;
++    border-radius: 6px;
++    box-shadow: 0 4px 16px rgba(5,45,34,.045);
++    transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
++}
++
++.admin-hub-card:hover {
++    border-color: #b8cec2;
++    box-shadow: 0 8px 22px rgba(5,45,34,.08);
++    transform: translateY(-2px);
++}
++
++.admin-hub-card > i {
++    border-radius: 5px;
++}
++
++.admin-hub-card a {
++    display: inline-flex;
++    align-items: center;
++    gap: 8px;
++    padding: 8px 0;
++}
++
++@media (max-width: 980px) {
++    .admin-sidebar {
++        width: 230px;
++    }
++
++    .admin-workspace {
++        margin-left: 230px;
++    }
++
++    .admin-hub {
++        grid-template-columns: repeat(2, minmax(0, 1fr));
++    }
++}
++
++@media (max-width: 760px) {
++    body.admin-body {
++        padding-top: 64px;
++    }
++
++    .admin-header,
++    .admin-topbar {
++        height: 64px;
++    }
++
++    .admin-topbar {
++        padding: 0 16px;
++        gap: 12px;
++    }
++
++    .admin-topbar .admin-brand img {
++        width: 38px;
++        height: 38px;
++    }
++
++    .admin-topbar .admin-brand strong {
++        font-size: .9rem;
++    }
++
++    .admin-topbar .admin-brand small {
++        display: block;
++        font-size: .58rem;
++    }
++
++    .admin-menu-toggle {
++        display: inline-flex;
++        min-height: 38px;
++        align-items: center;
++        gap: 8px;
++        padding: 8px 10px;
++        border: 1px solid rgba(255,255,255,.2);
++        border-radius: 5px;
++        color: #fff;
++        cursor: pointer;
++        font-size: .78rem;
++        font-weight: 700;
++    }
++
++    .admin-sidebar-toggle-input {
++        position: fixed;
++        display: block;
++        width: 1px;
++        height: 1px;
++        opacity: 0;
++        pointer-events: none;
++    }
++
++    .admin-sidebar {
++        top: 64px;
++        width: min(290px, 86vw);
++        box-shadow: 12px 0 30px rgba(5,45,34,.12);
++        transform: translateX(-110%);
++        transition: transform .2s ease;
++    }
++
++    .admin-sidebar-toggle-input:checked ~ .admin-sidebar {
++        transform: translateX(0);
++    }
++
++    .admin-sidebar-toggle-input:focus-visible ~ .admin-sidebar {
++        outline: 3px solid var(--green-600);
++    }
++
++    .admin-workspace,
++    .admin-guest .admin-workspace {
++        margin-left: 0;
++    }
++
++    .admin-main {
++        padding: 24px 0 48px;
++    }
++
++    .admin-workspace > .flash {
++        width: calc(100% - 32px);
++    }
++
++    .admin-hub {
++        grid-template-columns: 1fr;
++        margin-top: 24px;
++    }
++
++    .admin-dashboard-intro {
++        margin-bottom: 20px;
++    }
++
++    .admin-hub-card {
++        min-height: 0;
++    }
++
++    .admin-topbar-actions a {
++        width: 40px;
++        min-width: 40px;
++        padding: 0;
++        font-size: 0;
++    }
++
++    .admin-topbar-actions a i {
++        font-size: .85rem;
++    }
++}
++
++@media (prefers-reduced-motion: reduce) {
++    .admin-sidebar,
++    .admin-hub-card {
++        transition: none;
++    }
++}
+diff --git a/assets/css/client-feedback.css b/assets/css/client-feedback.css
+new file mode 100644
+index 0000000..a023e39
+--- /dev/null
++++ b/assets/css/client-feedback.css
+@@ -0,0 +1,5 @@
++.feedback-hero{position:relative;isolation:isolate;overflow:hidden;background:var(--green-950,#073c2d);color:#fff;padding:46px 0 58px}.feedback-hero:after{content:"";position:absolute;z-index:-1;inset:0;background:linear-gradient(90deg,rgba(4,35,26,.45),transparent 78%);pointer-events:none}.feedback-hero-inner{max-width:1100px}.feedback-hero .breadcrumbs{display:flex;align-items:center;gap:10px;margin-bottom:34px;color:rgba(255,255,255,.78);font-size:.82rem}.feedback-hero .breadcrumbs a{color:#fff;text-decoration:underline;text-underline-offset:3px}.feedback-hero .eyebrow{color:#c4e5d1}.feedback-hero h1{max-width:800px;margin:12px 0;font-size:clamp(2.2rem,5vw,3.7rem);line-height:1.08;letter-spacing:-.035em}.feedback-hero p{max-width:700px;margin:0 0 25px;color:rgba(255,255,255,.84);font-size:1.05rem;line-height:1.75}.feedback-hero .button{display:inline-flex;align-items:center;gap:10px}.feedback-section,.reviews-section{padding:64px 0 78px}.feedback-layout{display:grid;grid-template-columns:minmax(250px,.78fr) minmax(0,1.35fr);gap:34px;align-items:start}.feedback-aside{padding:12px 8px 12px 0}.feedback-icon{display:inline-flex;align-items:center;justify-content:center;width:54px;height:54px;border-radius:8px;background:#e8f2ed;color:var(--green-800,#07533d);font-size:1.35rem}.feedback-aside h2,.reviews-empty h2{margin:22px 0 12px;color:var(--green-950,#073c2d);font-size:1.7rem;line-height:1.25}.feedback-aside p{color:var(--muted,#65716b);line-height:1.8}.feedback-aside ul{display:grid;gap:15px;margin:25px 0 0;padding:0;list-style:none}.feedback-aside li{display:flex;align-items:flex-start;gap:10px;color:var(--ink,#27342e);font-size:.92rem;line-height:1.6}.feedback-aside li i{margin-top:4px;color:var(--green-700,#087653)}.feedback-form-card{padding:clamp(22px,4vw,38px);border:1px solid var(--line,#dfe7e2);border-radius:12px;background:#fff;box-shadow:0 14px 40px rgba(5,45,34,.06)}.feedback-form-heading h2{margin:7px 0;color:var(--green-950,#073c2d);font-size:1.8rem}.feedback-form-heading p{margin:0 0 25px;color:var(--muted,#65716b);font-size:.9rem}.feedback-field-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.feedback-field{display:grid;gap:7px;margin-bottom:19px}.feedback-field label,.feedback-rating-field legend{color:var(--green-950,#073c2d);font-size:.88rem;font-weight:750}.optional-label{margin-left:5px;color:#7b8781;font-size:.75rem;font-weight:500}.feedback-field input,.feedback-field select,.feedback-field textarea{width:100%;min-height:46px;padding:11px 12px;border:1px solid #d5e0da;border-radius:6px;background:#fff;color:var(--ink,#27342e);font:inherit;font-size:.92rem;outline:none}.feedback-field textarea{min-height:150px;resize:vertical;line-height:1.65}.feedback-field input:focus,.feedback-field select:focus,.feedback-field textarea:focus{border-color:var(--green-700,#087653);box-shadow:0 0 0 3px rgba(8,118,83,.12)}.feedback-field small{color:var(--muted,#65716b);font-size:.77rem;line-height:1.5}.feedback-rating-field{margin:0 0 22px;padding:0;border:0}.feedback-rating-field legend{margin-bottom:12px}.feedback-rating-options{display:flex;flex-wrap:wrap;align-items:center;gap:8px}.feedback-rating-options label{position:relative;display:inline-flex;cursor:pointer}.feedback-rating-options input{position:absolute;width:1px;height:1px;opacity:0}.feedback-rating-options label>span{display:inline-flex;align-items:center;justify-content:center;width:39px;height:39px;border:1px solid #d5e0da;border-radius:6px;color:#9aa59f;background:#fff}.feedback-rating-options input:checked+span{color:#9a6a00;border-color:#d4a017;background:#fff8df}.feedback-rating-options input:focus-visible+span{outline:3px solid rgba(8,118,83,.28);outline-offset:2px}.feedback-rating-hint{margin-left:5px;color:var(--muted,#65716b);font-size:.78rem}.feedback-consent-box{display:grid;gap:14px;margin:4px 0 22px;padding:17px;border:1px solid #e1e8e4;border-radius:7px;background:#f8fbf9}.feedback-checkbox{display:flex;align-items:flex-start;gap:10px;color:#4f5c55;font-size:.82rem;line-height:1.6}.feedback-checkbox input{flex:0 0 auto;width:17px;height:17px;margin-top:3px;accent-color:var(--green-800,#07533d)}.feedback-checkbox a{color:var(--green-800,#07533d);text-decoration:underline;text-underline-offset:2px}.feedback-checkbox strong{color:#536158;font-size:.75rem}.feedback-form-footer{display:flex;align-items:center;justify-content:space-between;gap:20px}.feedback-form-footer p{max-width:420px;margin:0;color:var(--muted,#65716b);font-size:.78rem;line-height:1.55}.feedback-form-footer p i{margin-right:5px;color:var(--green-700,#087653)}.feedback-form-footer .button{display:inline-flex;align-items:center;gap:10px;white-space:nowrap}.feedback-alert{display:flex;gap:10px;margin-bottom:20px;padding:13px 15px;border:1px solid;border-radius:6px;font-size:.9rem;line-height:1.5}.feedback-alert.is-success{border-color:#b5d9c4;background:#eff9f2;color:#185b35}.feedback-alert.is-error{border-color:#e9c3c3;background:#fff4f4;color:#8b2222}.feedback-honeypot{position:absolute!important;left:-10000px!important;width:1px!important;height:1px!important;overflow:hidden!important}.reviews-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}.review-card{display:flex;flex-direction:column;min-width:0;padding:26px;border:1px solid var(--line,#dfe7e2);border-radius:9px;background:#fff;box-shadow:0 8px 28px rgba(5,45,34,.04)}.review-card-mark{color:var(--green-700,#087653);font-size:1.3rem}.review-stars{display:flex;gap:4px;margin-top:16px;color:#d7ded9;font-size:.83rem}.review-stars .is-filled{color:#c38a08}.review-card blockquote{margin:16px 0 25px;color:#38443d;font-size:.97rem;line-height:1.8;overflow-wrap:anywhere}.review-card-footer{display:grid;gap:4px;margin-top:auto;padding-top:15px;border-top:1px solid #e8eeea}.review-card-footer strong{color:var(--green-950,#073c2d);font-size:.9rem}.review-card-footer span{color:var(--muted,#65716b);font-size:.78rem}.reviews-empty{max-width:700px;margin:0 auto;padding:55px 25px;border:1px solid var(--line,#dfe7e2);border-radius:10px;text-align:center;background:#fff}.reviews-empty .feedback-icon{margin:auto}.reviews-empty h2{margin-top:18px}.reviews-empty p{color:var(--muted,#65716b);line-height:1.8}.reviews-empty .button{display:inline-flex;margin-top:12px}.reviews-disclaimer{margin:28px 0 0;color:var(--muted,#65716b);font-size:.8rem;line-height:1.6}.feedback-name-consent{padding-top:3px}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
++@media(max-width:900px){.feedback-layout{grid-template-columns:1fr;gap:24px}.feedback-aside{padding:0}.reviews-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
++@media(max-width:620px){.feedback-hero{padding:30px 0 42px}.feedback-hero .breadcrumbs{margin-bottom:24px}.feedback-section,.reviews-section{padding:38px 0 50px}.feedback-field-grid{grid-template-columns:1fr;gap:0}.feedback-form-card{padding:22px 17px}.feedback-form-footer{align-items:stretch;flex-direction:column}.feedback-form-footer .button{justify-content:center}.feedback-rating-options{gap:6px}.feedback-rating-options label>span{width:36px;height:36px}.feedback-rating-hint{flex-basis:100%;margin:4px 0 0}.reviews-grid{grid-template-columns:1fr}.review-card{padding:22px}}
++
++.privacy-notice-card{max-width:850px;margin:0 auto}.privacy-notice-card h2{color:var(--green-950,#073c2d);margin:0 0 12px}.privacy-notice-card h3{margin:25px 0 8px;color:var(--green-950,#073c2d);font-size:1.05rem}.privacy-notice-card p{color:var(--muted,#65716b);line-height:1.8}.privacy-notice-card a:not(.button){color:var(--green-800,#07533d);text-decoration:underline;text-underline-offset:3px}.privacy-notice-card .button{display:inline-flex;margin-top:12px}
+diff --git a/client-reviews.php b/client-reviews.php
+new file mode 100644
+index 0000000..2897428
+--- /dev/null
++++ b/client-reviews.php
+@@ -0,0 +1,66 @@
++<?php
++declare(strict_types=1);
++
++require __DIR__ . '/config/bootstrap.php';
++require PROJECT_ROOT . '/config/client-feedback.php';
++
++$pageTitle = 'Client Reviews | IY Finance Solutions';
++$pageDescription = 'Read client experiences shared with permission by people who have used IY Finance Solutions.';
++$activePage = 'reviews';
++$bodyClass = 'client-reviews-page';
++$pageStyles = ['css/client-feedback.css'];
++
++$reviews = array_values(array_filter(client_feedback_read(), static function (array $record): bool {
++    return ($record['status'] ?? '') === 'approved'
++        && ($record['publication_consent'] ?? false) === true
++        && trim((string) ($record['feedback'] ?? '')) !== '';
++}));
++usort($reviews, static fn (array $left, array $right): int => strcmp((string) ($right['reviewed_at'] ?? $right['created_at'] ?? ''), (string) ($left['reviewed_at'] ?? $left['created_at'] ?? '')));
++
++require PROJECT_ROOT . '/includes/header.php';
++?>
++<section class="feedback-hero reviews-hero">
++    <div class="shell feedback-hero-inner">
++        <nav class="breadcrumbs" aria-label="Breadcrumb">
++            <a href="<?= h(site_url('index.php')) ?>">Home</a>
++            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
++            <span>Client reviews</span>
++        </nav>
++        <span class="eyebrow light">Shared with permission</span>
++        <h1>Experiences from our clients.</h1>
++        <p>Every story shown here has been reviewed and approved for publication. Individual experiences and outcomes may differ.</p>
++        <a class="button button-light" href="<?= h(site_url('feedback.php')) ?>">Share your feedback <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
++    </div>
++</section>
++<section class="section reviews-section">
++    <div class="shell">
++        <?php if ($reviews === []): ?>
++            <div class="reviews-empty">
++                <span class="feedback-icon"><i class="fa-regular fa-comments" aria-hidden="true"></i></span>
++                <h2>Client stories will appear here.</h2>
++                <p>We are building this collection from genuine feedback shared with permission. No reviews are published until they have been reviewed and approved.</p>
++                <a class="button button-primary" href="<?= h(site_url('feedback.php')) ?>">Share your experience</a>
++            </div>
++        <?php else: ?>
++            <div class="reviews-grid">
++                <?php foreach ($reviews as $review): ?>
++                    <article class="review-card">
++                        <div class="review-card-mark" aria-hidden="true"><i class="fa-solid fa-quote-left"></i></div>
++                        <?php if (isset($review['rating']) && is_int($review['rating']) && $review['rating'] >= 1 && $review['rating'] <= 5): ?>
++                            <div class="review-stars" aria-label="Rated <?= (int) $review['rating'] ?> out of 5 stars">
++                                <?php for ($star = 1; $star <= 5; $star++): ?><i class="fa-solid fa-star<?= $star <= $review['rating'] ? ' is-filled' : '' ?>" aria-hidden="true"></i><?php endfor; ?>
++                            </div>
++                        <?php endif; ?>
++                        <blockquote><?= nl2br(h((string) $review['feedback'])) ?></blockquote>
++                        <div class="review-card-footer">
++                            <strong><?= !empty($review['display_name_consent']) && trim((string) ($review['name'] ?? '')) !== '' ? h((string) $review['name']) : 'Anonymous client' ?></strong>
++                            <?php if (trim((string) ($review['service'] ?? '')) !== ''): ?><span><?= h((string) $review['service']) ?></span><?php endif; ?>
++                        </div>
++                    </article>
++                <?php endforeach; ?>
++            </div>
++        <?php endif; ?>
++        <p class="reviews-disclaimer">Testimonials reflect individual experiences and are not a guarantee of a particular credit, financial or service outcome.</p>
++    </div>
++</section>
++<?php require PROJECT_ROOT . '/includes/footer.php'; ?>
+diff --git a/config/client-feedback.php b/config/client-feedback.php
+new file mode 100644
+index 0000000..f031913
+--- /dev/null
++++ b/config/client-feedback.php
+@@ -0,0 +1,82 @@
++<?php
++declare(strict_types=1);
++
++if (!defined('PROJECT_ROOT') || !defined('STORAGE_DIRECTORY')) {
++    throw new RuntimeException('Load config/bootstrap.php before config/client-feedback.php.');
++}
++
++require_once PROJECT_ROOT . '/config/content.php';
++
++defined('CLIENT_FEEDBACK_FILE') || define('CLIENT_FEEDBACK_FILE', STORAGE_DIRECTORY . '/client-feedback.json');
++defined('CLIENT_FEEDBACK_LOCK_FILE') || define('CLIENT_FEEDBACK_LOCK_FILE', STORAGE_DIRECTORY . '/client-feedback.lock');
++
++function client_feedback_services(): array
++{
++    return [
++        'Credit Clearance',
++        'Default (Adverse Listing)',
++        'Account Negotiations',
++        'Judgements',
++        'Disputes (Updating)',
++        'Administrator Order',
++        'Debt Review Removal',
++        'Financial Assessment',
++        'Funeral Cover',
++        'Personal Loans',
++        'Other service',
++    ];
++}
++
++/** Read all feedback records. This file must remain inside the protected storage directory. */
++function client_feedback_read(): array
++{
++    return content_read_records(CLIENT_FEEDBACK_FILE);
++}
++
++/**
++ * Perform a read/modify/write while holding a separate lock, preventing two submissions
++ * or moderation actions from overwriting each other's JSON records.
++ */
++function client_feedback_mutate(callable $mutator): bool
++{
++    if (!is_dir(STORAGE_DIRECTORY) && !mkdir(STORAGE_DIRECTORY, 0750, true) && !is_dir(STORAGE_DIRECTORY)) {
++        return false;
++    }
++
++    $lock = @fopen(CLIENT_FEEDBACK_LOCK_FILE, 'c');
++    if ($lock === false) {
++        return false;
++    }
++
++    try {
++        if (!flock($lock, LOCK_EX)) {
++            return false;
++        }
++
++        $records = client_feedback_read();
++        $changed = $mutator($records);
++        if ($changed !== true) {
++            return false;
++        }
++
++        return content_write_records(CLIENT_FEEDBACK_FILE, $records);
++    } finally {
++        @flock($lock, LOCK_UN);
++        @fclose($lock);
++    }
++}
++
++function client_feedback_text_length(string $value): int
++{
++    return function_exists('mb_strlen') ? mb_strlen($value, 'UTF-8') : strlen($value);
++}
++
++function client_feedback_excerpt(string $value, int $limit = 180): string
++{
++    $value = trim(preg_replace('/\s+/u', ' ', $value) ?? $value);
++    if (client_feedback_text_length($value) <= $limit) {
++        return $value;
++    }
++    $short = function_exists('mb_substr') ? mb_substr($value, 0, $limit - 1, 'UTF-8') : substr($value, 0, $limit - 1);
++    return rtrim($short) . '…';
++}
+diff --git a/feedback-submit.php b/feedback-submit.php
+new file mode 100644
+index 0000000..056e193
+--- /dev/null
++++ b/feedback-submit.php
+@@ -0,0 +1,108 @@
++<?php
++declare(strict_types=1);
++
++require __DIR__ . '/config/bootstrap.php';
++require PROJECT_ROOT . '/config/client-feedback.php';
++
++if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
++    redirect_to('feedback.php');
++}
++
++start_admin_session();
++$old = [
++    'service' => trim((string) ($_POST['service'] ?? '')),
++    'language' => trim((string) ($_POST['language'] ?? '')),
++    'name' => trim((string) ($_POST['name'] ?? '')),
++    'email' => trim((string) ($_POST['email'] ?? '')),
++    'rating' => trim((string) ($_POST['rating'] ?? '')),
++    'feedback' => trim((string) ($_POST['feedback'] ?? '')),
++    'privacy_acknowledged' => !empty($_POST['privacy_acknowledged']),
++    'publication_consent' => !empty($_POST['publication_consent']),
++    'display_name_consent' => !empty($_POST['display_name_consent']),
++];
++
++$fail = static function (string $message) use ($old): never {
++    $_SESSION['client_feedback_state'] = ['status' => 'error', 'message' => $message, 'old' => $old];
++    redirect_to('feedback.php');
++};
++
++if (!csrf_is_valid($_POST['csrf_token'] ?? null)) {
++    $fail('Your form session expired. Please refresh the page and try again.');
++}
++
++// Quietly discard automated submissions caught by the hidden honeypot.
++if (trim((string) ($_POST['company_website'] ?? '')) !== '') {
++    $_SESSION['client_feedback_state'] = ['status' => 'success', 'message' => 'Thank you. Your feedback has been received.', 'old' => []];
++    redirect_to('feedback.php');
++}
++
++$startedAt = filter_var($_POST['form_started_at'] ?? null, FILTER_VALIDATE_INT);
++if ($startedAt === false || $startedAt === null || time() - (int) $startedAt < 2 || time() - (int) $startedAt > 14400) {
++    $fail('Please take a moment to complete the form, then submit it again.');
++}
++
++$now = time();
++$submissionTimes = array_values(array_filter(
++    is_array($_SESSION['client_feedback_submission_times'] ?? null) ? $_SESSION['client_feedback_submission_times'] : [],
++    static fn ($stamp): bool => is_int($stamp) && $stamp > $now - 3600
++));
++if (count($submissionTimes) >= 3) {
++    $fail('You have submitted feedback several times recently. Please try again later.');
++}
++
++$allowedServices = client_feedback_services();
++if ($old['service'] !== '' && !in_array($old['service'], $allowedServices, true)) {
++    $fail('Please select a valid service.');
++}
++if (client_feedback_text_length($old['language']) > 60 || client_feedback_text_length($old['name']) > 100) {
++    $fail('Please check the length of the language or name field.');
++}
++if ($old['email'] !== '' && (strlen($old['email']) > 254 || filter_var($old['email'], FILTER_VALIDATE_EMAIL) === false)) {
++    $fail('Please enter a valid email address, or leave the email field blank.');
++}
++if ($old['rating'] !== '' && !in_array($old['rating'], ['1', '2', '3', '4', '5'], true)) {
++    $fail('Please select a valid rating or leave it blank.');
++}
++if (client_feedback_text_length($old['feedback']) < 10 || client_feedback_text_length($old['feedback']) > 3000) {
++    $fail('Your feedback must contain between 10 and 3,000 characters.');
++}
++if (!$old['privacy_acknowledged']) {
++    $fail('Please acknowledge the privacy information before submitting your feedback.');
++}
++
++$record = [
++    'id' => content_new_id('feedback'),
++    'service' => $old['service'],
++    'language' => $old['language'],
++    'name' => $old['name'],
++    'email' => $old['email'],
++    'rating' => $old['rating'] === '' ? null : (int) $old['rating'],
++    'feedback' => $old['feedback'],
++    'privacy_acknowledged' => true,
++    'privacy_acknowledged_at' => gmdate('c'),
++    'publication_consent' => $old['publication_consent'],
++    'publication_consent_at' => $old['publication_consent'] ? gmdate('c') : null,
++    'display_name_consent' => $old['publication_consent'] && $old['display_name_consent'] && $old['name'] !== '',
++    'status' => 'pending',
++    'created_at' => gmdate('c'),
++    'reviewed_at' => null,
++    'reviewed_by' => null,
++];
++
++$saved = client_feedback_mutate(static function (array &$records) use ($record): bool {
++    $records[] = $record;
++    return true;
++});
++
++if (!$saved) {
++    $fail('We could not save your feedback just now. Please try again later.');
++}
++
++$submissionTimes[] = $now;
++$_SESSION['client_feedback_submission_times'] = $submissionTimes;
++$_SESSION['client_feedback_state'] = [
++    'status' => 'success',
++    'message' => 'Thank you for sharing your experience. Your feedback has been received and will be reviewed privately.',
++    'old' => [],
++];
++redirect_to('feedback.php');
+diff --git a/feedback.php b/feedback.php
+new file mode 100644
+index 0000000..29f10ba
+--- /dev/null
++++ b/feedback.php
+@@ -0,0 +1,137 @@
++<?php
++declare(strict_types=1);
++
++require __DIR__ . '/config/bootstrap.php';
++require PROJECT_ROOT . '/config/client-feedback.php';
++
++$pageTitle = 'Client Feedback | IY Finance Solutions';
++$pageDescription = 'Share your experience with IY Finance Solutions. Feedback is reviewed privately and testimonials are only published with permission.';
++$activePage = '';
++$bodyClass = 'client-feedback-page';
++$pageStyles = ['css/client-feedback.css'];
++
++start_admin_session();
++$feedbackState = $_SESSION['client_feedback_state'] ?? [];
++unset($_SESSION['client_feedback_state']);
++$feedbackStatus = is_array($feedbackState) ? (string) ($feedbackState['status'] ?? '') : '';
++$feedbackMessage = is_array($feedbackState) ? (string) ($feedbackState['message'] ?? '') : '';
++$old = is_array($feedbackState['old'] ?? null) ? $feedbackState['old'] : [];
++
++require PROJECT_ROOT . '/includes/header.php';
++?>
++<section class="feedback-hero">
++    <div class="shell feedback-hero-inner">
++        <nav class="breadcrumbs" aria-label="Breadcrumb">
++            <a href="<?= h(site_url('index.php')) ?>">Home</a>
++            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
++            <span>Client feedback</span>
++        </nav>
++        <span class="eyebrow light">Your experience matters</span>
++        <h1>Tell us how we did.</h1>
++        <p>We welcome honest feedback in any language. Tell us what went well, what we could improve, or how we supported you.</p>
++        <a class="button button-light" href="<?= h(site_url('client-reviews.php')) ?>">Read client reviews <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
++    </div>
++</section>
++
++<section class="section feedback-section">
++    <div class="shell feedback-layout">
++        <aside class="feedback-aside">
++            <span class="feedback-icon"><i class="fa-solid fa-comments" aria-hidden="true"></i></span>
++            <h2>Your voice helps us improve.</h2>
++            <p>Whether your experience was positive or we could have done better, your feedback helps our team understand what matters to clients.</p>
++            <ul>
++                <li><i class="fa-solid fa-lock" aria-hidden="true"></i> Your feedback stays private while it is reviewed.</li>
++                <li><i class="fa-solid fa-language" aria-hidden="true"></i> Write in the language you feel comfortable using.</li>
++                <li><i class="fa-solid fa-user-secret" aria-hidden="true"></i> You may submit feedback anonymously.</li>
++            </ul>
++        </aside>
++
++        <div class="feedback-form-card">
++            <div class="feedback-form-heading">
++                <span class="eyebrow">Client feedback</span>
++                <h2>Share your experience</h2>
++                <p>Fields marked optional can be left blank. A star rating is optional.</p>
++            </div>
++
++            <?php if ($feedbackMessage !== ''): ?>
++                <div class="feedback-alert <?= $feedbackStatus === 'success' ? 'is-success' : 'is-error' ?>" role="status" aria-live="polite">
++                    <i class="fa-solid <?= $feedbackStatus === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation' ?>" aria-hidden="true"></i>
++                    <span><?= h($feedbackMessage) ?></span>
++                </div>
++            <?php endif; ?>
++
++            <form action="<?= h(site_url('feedback-submit.php')) ?>" method="post" class="client-feedback-form">
++                <input type="hidden" name="csrf_token" value="<?= h(csrf_token()) ?>">
++                <input type="hidden" name="form_started_at" value="<?= time() ?>">
++                <div class="feedback-honeypot" aria-hidden="true">
++                    <label for="feedback-company-site">Leave this field empty</label>
++                    <input id="feedback-company-site" type="text" name="company_website" tabindex="-1" autocomplete="off">
++                </div>
++
++                <div class="feedback-field-grid">
++                    <div class="feedback-field">
++                        <label for="feedback-service">Which service did you use? <span class="optional-label">Optional</span></label>
++                        <select id="feedback-service" name="service">
++                            <option value="">Select a service (optional)</option>
++                            <?php foreach (client_feedback_services() as $service): ?>
++                                <option value="<?= h($service) ?>" <?= (string) ($old['service'] ?? '') === $service ? 'selected' : '' ?>><?= h($service) ?></option>
++                            <?php endforeach; ?>
++                        </select>
++                    </div>
++                    <div class="feedback-field">
++                        <label for="feedback-language">Language <span class="optional-label">Optional</span></label>
++                        <input id="feedback-language" name="language" type="text" maxlength="60" value="<?= h((string) ($old['language'] ?? '')) ?>" placeholder="e.g. isiZulu, English, Sesotho">
++                    </div>
++                    <div class="feedback-field">
++                        <label for="feedback-name">Your name <span class="optional-label">Optional</span></label>
++                        <input id="feedback-name" name="name" type="text" maxlength="100" value="<?= h((string) ($old['name'] ?? '')) ?>" autocomplete="name" placeholder="Leave blank to stay anonymous">
++                    </div>
++                    <div class="feedback-field">
++                        <label for="feedback-email">Email address <span class="optional-label">Optional</span></label>
++                        <input id="feedback-email" name="email" type="email" maxlength="254" value="<?= h((string) ($old['email'] ?? '')) ?>" autocomplete="email" placeholder="Only if you would like us to follow up">
++                    </div>
++                </div>
++
++                <fieldset class="feedback-rating-field">
++                    <legend>How would you rate your experience? <span class="optional-label">Optional</span></legend>
++                    <div class="feedback-rating-options">
++                        <?php for ($score = 1; $score <= 5; $score++): ?>
++                            <label>
++                                <input type="radio" name="rating" value="<?= $score ?>" <?= (string) ($old['rating'] ?? '') === (string) $score ? 'checked' : '' ?>>
++                                <span><i class="fa-solid fa-star" aria-hidden="true"></i><span class="sr-only"><?= $score ?> out of 5</span></span>
++                            </label>
++                        <?php endfor; ?>
++                        <span class="feedback-rating-hint">Choose 1–5 stars, or skip this question.</span>
++                    </div>
++                </fieldset>
++
++                <div class="feedback-field">
++                    <label for="feedback-message">Your feedback <span aria-hidden="true">*</span></label>
++                    <textarea id="feedback-message" name="feedback" rows="7" minlength="10" maxlength="3000" required placeholder="Share your experience in your own words and language."><?= h((string) ($old['feedback'] ?? '')) ?></textarea>
++                    <small>10–3,000 characters. Please do not include ID numbers, account numbers, passwords or detailed financial information.</small>
++                </div>
++
++                <div class="feedback-consent-box">
++                    <label class="feedback-checkbox">
++                        <input type="checkbox" name="privacy_acknowledged" value="1" required <?= !empty($old['privacy_acknowledged']) ? 'checked' : '' ?>>
++                        <span>I have read the <a href="<?= h(site_url('privacy.php')) ?>">privacy information</a> and understand that IY Finance Solutions will use this feedback to review and improve its services. <strong>Required</strong></span>
++                    </label>
++                    <label class="feedback-checkbox">
++                        <input type="checkbox" name="publication_consent" value="1" <?= !empty($old['publication_consent']) ? 'checked' : '' ?>>
++                        <span>I give permission for my feedback to be considered for publication as a testimonial after review. I understand that it will not be published unless approved. <strong>Optional</strong></span>
++                    </label>
++                    <label class="feedback-checkbox feedback-name-consent">
++                        <input type="checkbox" name="display_name_consent" value="1" <?= !empty($old['display_name_consent']) ? 'checked' : '' ?>>
++                        <span>If I provided my name, I also give permission for my name to appear with the testimonial. Leave unchecked to publish anonymously. <strong>Optional</strong></span>
++                    </label>
++                </div>
++
++                <div class="feedback-form-footer">
++                    <p><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Feedback is private by default. Submitting it does not guarantee publication or a particular service outcome.</p>
++                    <button class="button button-primary" type="submit"><span>Submit feedback</span><i class="fa-solid fa-paper-plane" aria-hidden="true"></i></button>
++                </div>
++            </form>
++        </div>
++    </div>
++</section>
++<?php require PROJECT_ROOT . '/includes/footer.php'; ?>
+diff --git a/includes/admin-footer.php b/includes/admin-footer.php
+index b3e7610..2edc9cb 100644
+--- a/includes/admin-footer.php
++++ b/includes/admin-footer.php
+@@ -1,8 +1,8 @@
+ </main>
+ <footer class="admin-footer">
+-    <div class="admin-shell"><span>&copy; <?= date('Y') ?> IY Finance Solutions</span><span>Secure gallery management</span></div>
++    <div class="admin-shell"><span>&copy; <?= date('Y') ?> IY Finance Solutions</span><span>Secure website management</span></div>
+ </footer>
++</div>
+ <script src="<?= h(asset_url('js/admin.js')) ?>" defer></script>
+ </body>
+ </html>
+-
+diff --git a/includes/admin-header.php b/includes/admin-header.php
+index 58b0e21..298e61f 100644
+--- a/includes/admin-header.php
++++ b/includes/admin-header.php
+@@ -1,8 +1,17 @@
+ <?php
+ declare(strict_types=1);
+ 
+-$adminTitle = $adminTitle ?? 'Gallery administration';
++$adminTitle = $adminTitle ?? 'Website administration';
+ $isAuthenticated = admin_is_logged_in();
++$currentAdminPage = basename((string) (parse_url($_SERVER['SCRIPT_NAME'] ?? '', PHP_URL_PATH) ?: ''));
++$adminNavigation = [
++    ['file' => 'index.php', 'url' => 'admin/', 'label' => 'Dashboard', 'icon' => 'fa-solid fa-gauge-high'],
++    ['file' => 'updates.php', 'url' => 'admin/updates.php', 'label' => 'News & updates', 'icon' => 'fa-solid fa-bullhorn'],
++    ['file' => 'events.php', 'url' => 'admin/events.php', 'label' => 'Events calendar', 'icon' => 'fa-regular fa-calendar'],
++    ['file' => 'credit-enquiries.php', 'url' => 'admin/credit-enquiries.php', 'label' => 'Credit enquiries', 'icon' => 'fa-solid fa-phone-volume'],
++    ['file' => 'referrals.php', 'url' => 'admin/referrals.php', 'label' => 'QR referrals', 'icon' => 'fa-solid fa-qrcode'],
++    ['file' => 'feedback.php', 'url' => 'admin/feedback.php', 'label' => 'Client feedback', 'icon' => 'fa-solid fa-comments'],
++];
+ ?>
+ <!doctype html>
+ <html lang="en-ZA">
+@@ -16,43 +25,53 @@ $isAuthenticated = admin_is_logged_in();
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+     <link rel="stylesheet" href="<?= h(asset_url('css/admin.css')) ?>">
+     <?php foreach (($adminPageStyles ?? []) as $adminPageStyle): ?>
+-    <link rel="stylesheet" href="<?= h(asset_url($adminPageStyle)) ?>">
+-<?php endforeach; ?>
++        <link rel="stylesheet" href="<?= h(asset_url($adminPageStyle)) ?>">
++    <?php endforeach; ?>
+ </head>
+-<body>
++<body class="admin-body <?= $isAuthenticated ? 'has-admin-sidebar' : 'admin-guest' ?>">
+ <header class="admin-header">
+-    <div class="admin-shell admin-nav">
++    <div class="admin-topbar">
+         <a class="admin-brand" href="<?= h(site_url('admin/')) ?>">
+             <img src="<?= h(asset_url('images/logoimg.png')) ?>" alt="" width="44" height="44">
+-            <span><strong>IY Finance</strong><small>Content administration</small></span>
++            <span><strong>IY Finance</strong><small>Website administration</small></span>
+         </a>
+-        <div class="admin-nav-actions">
+-            <a href="<?= h(site_url('gallery.php')) ?>" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i> View gallery</a>
+-            <?php if ($isAuthenticated): ?>
+-                <a href="<?= h(site_url('admin/')) ?>">
+-    <i class="fa-regular fa-images" aria-hidden="true"></i> Gallery
+-</a>
+-<a href="<?= h(site_url('admin/updates.php')) ?>">
+-    <i class="fa-solid fa-bullhorn" aria-hidden="true"></i> Updates
+-</a>
+-<a href="<?= h(site_url('admin/events.php')) ?>">
+-    <i class="fa-regular fa-calendar" aria-hidden="true"></i> Events
+-</a>
+-<a href="<?= h(site_url('admin/credit-enquiries.php')) ?>">
+-    <i class="fa-solid fa-phone-volume" aria-hidden="true"></i> Credit enquiries
+-</a>
+-<a href="<?= h(site_url('admin/referrals.php')) ?>">
+-    <i class="fa-solid fa-qrcode" aria-hidden="true"></i> QR referrals
+-</a>
+-                <form action="<?= h(site_url('admin/logout.php')) ?>" method="post">
+-                    <input type="hidden" name="csrf_token" value="<?= h(csrf_token()) ?>">
+-                    <button type="submit"><i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i> Sign out</button>
+-                </form>
+-            <?php endif; ?>
++        <?php if ($isAuthenticated): ?>
++            <label class="admin-menu-toggle" for="admin-sidebar-toggle" aria-label="Toggle admin navigation">
++                <i class="fa-solid fa-bars" aria-hidden="true"></i><span>Menu</span>
++            </label>
++        <?php endif; ?>
++        <div class="admin-topbar-actions">
++            <a href="<?= h(site_url('index.php')) ?>" target="_blank" rel="noopener">
++                <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i><span>View website</span>
++            </a>
+         </div>
+     </div>
+ </header>
+ 
++<?php if ($isAuthenticated): ?>
++<input class="admin-sidebar-toggle-input" type="checkbox" id="admin-sidebar-toggle" aria-label="Toggle admin navigation">
++<aside class="admin-sidebar" aria-label="Administrator navigation">
++    <div class="admin-sidebar-heading">WORKSPACE</div>
++    <nav class="admin-sidebar-nav">
++        <?php foreach ($adminNavigation as $item): ?>
++            <a class="<?= $currentAdminPage === $item['file'] ? 'is-active' : '' ?>"
++               href="<?= h(site_url($item['url'])) ?>"
++               <?= $currentAdminPage === $item['file'] ? 'aria-current="page"' : '' ?>>
++                <i class="<?= h($item['icon']) ?>" aria-hidden="true"></i><span><?= h($item['label']) ?></span>
++            </a>
++        <?php endforeach; ?>
++    </nav>
++    <div class="admin-sidebar-bottom">
++        <span class="admin-sidebar-account"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Admin access</span>
++        <form action="<?= h(site_url('admin/logout.php')) ?>" method="post">
++            <input type="hidden" name="csrf_token" value="<?= h(csrf_token()) ?>">
++            <button type="submit"><i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i><span>Sign out</span></button>
++        </form>
++    </div>
++</aside>
++<?php endif; ?>
++
++<div class="admin-workspace">
+ <?php foreach (consume_flash_messages() as $message): ?>
+     <div class="admin-shell flash flash-<?= h($message['type'] ?? 'info') ?>" role="status">
+         <i class="fa-solid <?= ($message['type'] ?? '') === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation' ?>" aria-hidden="true"></i>
+diff --git a/includes/footer.php b/includes/footer.php
+index 79301f3..760416d 100644
+--- a/includes/footer.php
++++ b/includes/footer.php
+@@ -50,6 +50,8 @@ $servicesForFooter = require PROJECT_ROOT . '/config/services.php';
+                 <li><a href="<?= h(site_url('index.php#process')) ?>">How it works</a></li>
+                 <li><a href="<?= h(site_url('updates.php')) ?>">News & updates</a></li>
+ <li><a href="<?= h(site_url('events.php')) ?>">Events calendar</a></li>
++                <li><a href="<?= h(site_url('client-reviews.php')) ?>">Client reviews</a></li>
++                <li><a href="<?= h(site_url('feedback.php')) ?>">Share feedback</a></li>
+                 <li><a href="<?= h(site_url('index.php#faq')) ?>">Frequently asked questions</a></li>
+                 <li><a href="<?= h(site_url('contact.php')) ?>">Contact us</a></li>
+                 <li><a href="<?= h(site_url('admin/')) ?>">Administrator</a></li>
+diff --git a/includes/header.php b/includes/header.php
+index c500588..76964ff 100644
+--- a/includes/header.php
++++ b/includes/header.php
+@@ -98,6 +98,8 @@ $servicesForNavigation = require PROJECT_ROOT . '/config/services.php';
+                     <i class="bi bi-people icon" aria-hidden="true"></i>ABOUT</a>
+                 <a class="<?= $activePage === 'gallery' ? 'active' : '' ?>" href="<?= h(site_url('gallery.php')) ?>">
+                     <i class="bi bi-images icon" aria-hidden="true"></i>GALLERY</a>
++                <a class="<?= $activePage === 'reviews' ? 'active' : '' ?>" href="<?= h(site_url('client-reviews.php')) ?>">
++                    <i class="bi bi-chat-quote icon" aria-hidden="true"></i>REVIEWS</a>
+ <a class="<?= in_array($activePage, ['updates', 'events'], true) ? 'active' : '' ?>"
+    href="<?= h(site_url('updates.php')) ?>">
+     <i class="bi bi-megaphone icon" aria-hidden="true"></i>
+diff --git a/privacy.php b/privacy.php
+new file mode 100644
+index 0000000..6f6be56
+--- /dev/null
++++ b/privacy.php
+@@ -0,0 +1,38 @@
++<?php
++declare(strict_types=1);
++
++require __DIR__ . '/config/bootstrap.php';
++$pageTitle = 'Feedback Privacy Information | IY Finance Solutions';
++$pageDescription = 'Learn how IY Finance Solutions uses client feedback and how to ask about your personal information.';
++$activePage = '';
++$bodyClass = 'client-reviews-page';
++$pageStyles = ['css/client-feedback.css'];
++require PROJECT_ROOT . '/includes/header.php';
++?>
++<section class="feedback-hero">
++    <div class="shell feedback-hero-inner">
++        <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="<?= h(site_url('index.php')) ?>">Home</a><i class="fa-solid fa-chevron-right" aria-hidden="true"></i><a href="<?= h(site_url('feedback.php')) ?>">Client feedback</a><i class="fa-solid fa-chevron-right" aria-hidden="true"></i><span>Privacy information</span></nav>
++        <span class="eyebrow light">Your information</span>
++        <h1>Feedback privacy information</h1>
++        <p>We use feedback to understand client experiences, improve our services and, only with your separate permission, consider publishing a testimonial.</p>
++    </div>
++</section>
++<section class="section reviews-section">
++    <div class="shell">
++        <article class="review-card privacy-notice-card">
++            <h2>How feedback is handled</h2>
++            <p>Feedback is stored privately for review by authorised IY Finance Solutions administrators. Providing feedback does not automatically make it public.</p>
++            <h3>What we collect</h3>
++            <p>Depending on what you choose to provide, a submission may include your feedback, the service you used, language, optional name, optional email address and an optional rating. Please do not include your identity number, account numbers, passwords or unnecessary financial details.</p>
++            <h3>How we use it</h3>
++            <p>We use feedback to review and improve our services. If you separately consent to publication, an administrator may consider your feedback as a testimonial. Publication occurs only after review and approval. Your name is displayed only if you have separately agreed to the use of your name; otherwise a published testimonial is shown anonymously.</p>
++            <h3>Keeping information private</h3>
++            <p>Contact details and feedback awaiting review are not displayed on the public reviews page. We take reasonable technical and organisational steps to protect records and restrict access. No website can guarantee absolute security.</p>
++            <h3>Your choices and questions</h3>
++            <p>You may leave your name and rating blank. You can submit feedback without agreeing to publication. To ask about feedback you submitted, request correction or ask that it be removed, contact <a href="mailto:<?= h($site['email']) ?>"><?= h($site['email']) ?></a> and provide enough information for the team to identify the submission without sending sensitive financial information.</p>
++            <p>This notice summarises how the feedback feature is intended to work and is not a substitute for the company’s full privacy policy or legal advice. IY Finance Solutions should review it against its actual retention practices and applicable POPIA obligations before launch.</p>
++            <a class="button button-primary" href="<?= h(site_url('feedback.php')) ?>">Return to feedback</a>
++        </article>
++    </div>
++</section>
++<?php require PROJECT_ROOT . '/includes/footer.php'; ?>
+diff --git a/storage/client-feedback.json b/storage/client-feedback.json
+new file mode 100644
+index 0000000..fe51488
+--- /dev/null
++++ b/storage/client-feedback.json
+@@ -0,0 +1 @@
++[]

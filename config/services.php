@@ -7,7 +7,6 @@ return [
     'summary' => 'Understand your credit profile and explore solutions to improve your credit standing.',
     'hero_image' => 'financial-assessment.webp',
     'hero_position' => 'center right',
-    // 'hero' => 'Understand Your Credit Profile. Take Control of Your Financial Future.',
     'hero' => 'Understand Your Credit. Make Better Financial Decisions.',
     'lead' => 'Get a comprehensive review of your credit profile, identify potential issues affecting your credit standing, and explore suitable solutions for your financial needs.',
     'intro_title' => 'A clearer understanding of your credit profile',

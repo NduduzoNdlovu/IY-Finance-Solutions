@@ -3,15 +3,25 @@ declare(strict_types=1);
 
 require dirname(__DIR__) . '/config/bootstrap.php';
 require PROJECT_ROOT . '/config/content.php';
+require PROJECT_ROOT . '/config/client-feedback.php';
 require_admin();
 
 $images = gallery_images();
-$adminTitle = 'Manage gallery';
+$adminTitle = 'Website dashboard';
 $adminPageStyles = ['css/content-admin.css'];
 $updatesTotal = count(content_read_records(UPDATES_RECORD_FILE));
 $eventsTotal = count(content_read_records(EVENTS_RECORD_FILE));
+$feedbackRecords = client_feedback_read();
+$pendingFeedbackTotal = count(array_filter($feedbackRecords, static fn (array $record): bool => ($record['status'] ?? 'pending') === 'pending'));
 require PROJECT_ROOT . '/includes/admin-header.php';
 ?>
+<section class="admin-shell admin-dashboard-intro">
+    <div>
+        <span class="admin-eyebrow">Administration overview</span>
+        <h1>Website dashboard</h1>
+        <p>Choose an area below to manage website content, enquiries and client feedback.</p>
+    </div>
+</section>
 <nav class="admin-shell admin-hub" aria-label="Website management areas">
 
     <article class="admin-hub-card">
@@ -86,12 +96,30 @@ require PROJECT_ROOT . '/includes/admin-header.php';
         </div>
     </article>
 
+    <article class="admin-hub-card">
+        <i class="fa-solid fa-qrcode" aria-hidden="true"></i>
+        <div>
+            <h2>QR Referrals</h2>
+            <p>Manage referral links and review QR scan activity.</p>
+            <a href="<?= h(site_url('admin/referrals.php')) ?>">Manage referrals <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+        </div>
+    </article>
+
+    <article class="admin-hub-card">
+        <i class="fa-solid fa-comments" aria-hidden="true"></i>
+        <div>
+            <h2>Client Feedback</h2>
+            <p><?= $pendingFeedbackTotal ?> pending <?= $pendingFeedbackTotal === 1 ? 'submission' : 'submissions' ?> awaiting review.</p>
+            <a href="<?= h(site_url('admin/feedback.php')) ?>">Review feedback <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+        </div>
+    </article>
+
 </nav>
 
 <div class="admin-shell dashboard-header" id="gallery-management">
 <!-- <div class="admin-shell dashboard-header"> -->
     <div>
-        <span class="admin-eyebrow">Gallery dashboard</span>
+        <span class="admin-eyebrow">Gallery management</span>
         <h1>Manage website photographs</h1>
         <p>Upload new pictures or remove images that should no longer appear in the public gallery.</p>
     </div>
@@ -156,4 +184,3 @@ require PROJECT_ROOT . '/includes/admin-header.php';
 </section>
 
 <?php require PROJECT_ROOT . '/includes/admin-footer.php'; ?>
-

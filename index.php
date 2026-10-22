@@ -4,11 +4,20 @@ declare(strict_types=1);
 require __DIR__ . '/config/bootstrap.php';
 require PROJECT_ROOT . '/config/content.php';
 $services = require PROJECT_ROOT . '/config/services.php';
+require PROJECT_ROOT . '/config/client-feedback.php';
+
+$homeReviews = array_values(array_filter(client_feedback_read(), static function (array $record): bool {
+    return ($record['status'] ?? '') === 'approved'
+        && ($record['publication_consent'] ?? false) === true
+        && trim((string) ($record['feedback'] ?? '')) !== '';
+}));
+usort($homeReviews, static fn (array $left, array $right): int => strcmp((string) ($right['reviewed_at'] ?? $right['created_at'] ?? ''), (string) ($left['reviewed_at'] ?? $left['created_at'] ?? '')));
+$homeReviews = array_slice($homeReviews, 0, 3);
 $pageTitle = 'IY Finance Solutions | Professional Financial Services in South Africa';
 $pageDescription = 'IY Finance Solutions provides debt counselling, personal-loan guidance, funeral cover, legal insurance, credit-clearance support and financial assessments.';
 $activePage = 'home';
 $bodyClass = 'home-page';
-$pageStyles = ['css/home-animations.css'];
+$pageStyles = ['css/home-animations.css','css/client-feedback.css'];
 $pageStyles[] = 'css/home-content-preview.css';
 $pageScript = 'home-animations.js';
     $homeHeroImages = [
@@ -231,6 +240,41 @@ require PROJECT_ROOT . '/includes/header.php';
         </div>
     </div>
 </section>
+
+<?php if ($homeReviews !== []): ?>
+<section class="section home-reviews-section" aria-labelledby="home-reviews-title">
+    <div class="shell">
+        <div class="section-heading split-heading reveal">
+            <div>
+                <span class="eyebrow">Client feedback</span>
+                <h2 id="home-reviews-title">What our clients say</h2>
+            </div>
+            <p>Read experiences shared by clients who have given us permission to publish their feedback.</p>
+        </div>
+        <div class="reviews-grid home-reviews-grid">
+            <?php foreach ($homeReviews as $review): ?>
+                <article class="review-card reveal">
+                    <div class="review-card-mark" aria-hidden="true"><i class="fa-solid fa-quote-left"></i></div>
+                    <?php if (isset($review['rating']) && is_numeric($review['rating']) && (int) $review['rating'] >= 1 && (int) $review['rating'] <= 5): ?>
+                        <div class="review-stars" aria-label="Rated <?= (int) $review['rating'] ?> out of 5 stars">
+                            <?php for ($star = 1; $star <= 5; $star++): ?><i class="fa-solid fa-star<?= $star <= (int) $review['rating'] ? ' is-filled' : '' ?>" aria-hidden="true"></i><?php endfor; ?>
+                        </div>
+                    <?php endif; ?>
+                    <blockquote><?= nl2br(h((string) $review['feedback'])) ?></blockquote>
+                    <div class="review-card-footer">
+                        <strong><?= !empty($review['display_name_consent']) && trim((string) ($review['name'] ?? '')) !== '' ? h((string) $review['name']) : 'Anonymous client' ?></strong>
+                        <?php if (trim((string) ($review['service'] ?? '')) !== ''): ?><span><?= h((string) $review['service']) ?></span><?php endif; ?>
+                    </div>
+                </article>
+            <?php endforeach; ?>
+        </div>
+        <div class="home-reviews-actions">
+            <a class="button button-primary" href="<?= h(site_url('client-reviews.php')) ?>">View All Reviews <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+        </div>
+        <p class="reviews-disclaimer">Testimonials reflect individual experiences and are not a guarantee of a particular credit, financial or service outcome.</p>
+    </div>
+</section>
+<?php endif; ?>
 
 <section class="section faq-section" id="faq">
     <div class="shell faq-layout">
