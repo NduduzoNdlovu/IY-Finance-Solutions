@@ -96,6 +96,77 @@ require PROJECT_ROOT . '/includes/header.php';
     </div>
 </section>
 
+<?php if ($serviceSlug === 'credit-clearance'): ?>
+<section class="section credit-clearance-subservices" aria-labelledby="credit-clearance-options-title">
+    <div class="shell">
+        <div class="section-heading centered reveal">
+            <span class="eyebrow">Credit profile solutions</span>
+            <h2 id="credit-clearance-options-title">Let’s address what is holding your credit profile back</h2>
+            <p>Negative listings and outdated information can stand in the way of your next financial step. IY Finance Solutions helps you review the record and follow the appropriate process to challenge, update or resolve eligible items.</p>
+        </div>
+
+        <?php
+        $creditClearanceOptions = [
+            [
+                'icon' => 'fa-triangle-exclamation',
+                'title' => 'Default (Adverse Listing)',
+                'text' => 'Concerned about a default or adverse listing on your credit report? We can review the entry and help pursue removal or correction where the listing is inaccurate, outdated, settled or otherwise eligible under the applicable process.',
+                'points' => ['Review the listing and supporting records', 'Check whether a dispute or update is appropriate'],
+                'message' => 'I would like help reviewing a Default / Adverse Listing on my credit profile.',
+            ],
+            [
+                'icon' => 'fa-handshake',
+                'title' => 'Account Negotiations',
+                'text' => 'If an account is affecting your credit standing, we can discuss available options for engaging with the credit provider, negotiating a resolution where possible, and requesting the correct account update once requirements are met.',
+                'points' => ['Discuss possible settlement or resolution options', 'Help identify evidence needed for an account update'],
+                'message' => 'I would like assistance with Account Negotiations for an account affecting my credit profile.',
+            ],
+            [
+                'icon' => 'fa-scale-balanced',
+                'title' => 'Judgements',
+                'text' => 'A court judgement can have a serious effect on your credit profile. We can help you understand the records and documents involved and guide you through the relevant legal or administrative steps, including a rescission process where applicable.',
+                'points' => ['Review available court and creditor documents', 'Explain the applicable rescission or record-update steps'],
+                'message' => 'I would like assistance reviewing a judgement on my credit profile.',
+            ],
+            [
+                'icon' => 'fa-file-circle-check',
+                'title' => 'Disputes (Updating)',
+                'text' => 'Still seeing incorrect, outdated or unpaid-looking information after a payment or change? We help prepare and follow up valid disputes and update requests with the relevant credit bureau or credit provider using the supporting documents available.',
+                'points' => ['Prepare supporting information for a valid dispute', 'Follow up correction and paid-up or status updates'],
+                'message' => 'I would like help with a credit bureau dispute or updating information on my credit profile.',
+            ],
+        ];
+        ?>
+
+        <div class="credit-clearance-options-grid">
+            <?php foreach ($creditClearanceOptions as $index => $option): ?>
+                <?php $optionWhatsApp = 'https://wa.me/' . $site['whatsapp_link'] . '?text=' . rawurlencode('Hello IY Finance Solutions, ' . $option['message']); ?>
+                <article class="credit-clearance-option-card reveal">
+                    <div class="credit-clearance-option-top">
+                        <span class="credit-clearance-option-icon"><i class="fa-solid <?= h($option['icon']) ?>" aria-hidden="true"></i></span>
+                        <span class="credit-clearance-option-number"><?= str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT) ?></span>
+                    </div>
+                    <h3><?= h($option['title']) ?></h3>
+                    <p><?= h($option['text']) ?></p>
+                    <ul>
+                        <?php foreach ($option['points'] as $point): ?>
+                            <li><i class="fa-solid fa-check" aria-hidden="true"></i><span><?= h($point) ?></span></li>
+                        <?php endforeach; ?>
+                    </ul>
+                    <a class="text-link" href="<?= h($optionWhatsApp) ?>" target="_blank" rel="noopener">Ask about this service <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+                </article>
+            <?php endforeach; ?>
+        </div>
+
+        <p class="credit-clearance-note">Every case is assessed individually. We do not promise automatic removal of accurate information. Any removal, correction or update depends on the evidence, the relevant credit provider or bureau, and the applicable legal process.</p>
+        <div class="credit-clearance-bottom-cta">
+            <div><h3>Not sure which service you need?</h3><p>Let our team review your concern and explain the next step for your circumstances.</p></div>
+            <a class="button button-primary" href="<?= h(site_url('index.php#contact')) ?>">Request assistance <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+        </div>
+    </div>
+</section>
+<?php endif; ?>
+
 <section class="section soft-section service-process-section">
     <div class="shell">
         <div class="section-heading centered reveal">

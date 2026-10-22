@@ -1,0 +1,181 @@
+--- a/config/services.php
++++ b/config/services.php
+@@ -466,4 +466,60 @@
+     ],
+ 
+ 
++    'administrator-order' => [
++        'name' => 'Administrator Order',
++        'icon' => 'fa-file-signature',
++        'summary' => 'Guidance for reviewing an administration order and understanding the lawful steps that may apply to your credit record.',
++        'hero_image' => 'credit-clearance.webp',
++        'hero_position' => 'center right',
++        'hero' => 'Understand your Administrator Order and your options',
++        'lead' => 'Get clear guidance on how an administration order may affect your credit profile and what steps may be available for review, variation, discharge or record updates.',
++        'intro_title' => 'A clear path to understanding your administration order',
++        'intro' => [
++            'An administration order may affect your credit standing and future applications. We help you understand the information shown on your credit report, identify the relevant documents and discuss the appropriate process for your circumstances.',
++            'Where the order has been paid, discharged, varied or recorded incorrectly, supporting evidence may be needed to pursue the relevant legal or credit-record update. The available outcome depends on the facts and applicable process.',
++        ],
++        'quick_title' => 'Understand the record and next steps',
++        'quick_points' => [
++            'Review the administration-order entry on your credit profile',
++            'Identify relevant court, payment and creditor documents',
++            'Explain possible discharge, variation or update steps',
++            'Help follow up eligible credit-record corrections',
++        ],
++        'feature_title' => 'How our Administrator Order assistance works',
++        'features' => [
++            ['Review your credit record', 'Check how the administration order is reflected and whether the details appear consistent with the information you provide.'],
++            ['Check the supporting documents', 'Identify available court orders, payment records, correspondence and other documents relevant to your case.'],
++            ['Explain the appropriate process', 'Discuss the applicable next steps, which may include obtaining advice, applying for discharge or variation, or requesting an update where legally supported.'],
++            ['Follow up eligible updates', 'Help track the relevant request and check the credit record after a decision or update has been processed.'],
++        ],
++        'suitability_title' => 'You may need Administrator Order assistance if you want to',
++        'suitability' => [
++            'Understand how an administration order affects your credit profile',
++            'Check whether a paid or discharged order is reflected correctly',
++            'Understand which court or payment documents may be required',
++            'Explore the process for a correction, discharge or variation where applicable',
++        ],
++        'documents_title' => 'Documents that may help with your review',
++        'documents_note' => 'The documents needed depend on the status and history of the order.',
++        'documents' => [
++            'South African ID or valid identification',
++            'A recent credit report showing the entry',
++            'Available administration or court-order documents',
++            'Payment confirmations or creditor statements where relevant',
++            'Correspondence relating to discharge, variation or prior updates',
++        ],
++        'outcome_title' => 'Know which steps are available to you',
++        'outcome' => 'Our aim is to help you understand the status of the order and pursue the correct process where a review, discharge, variation or credit-record update may be appropriate. No removal or outcome can be guaranteed before the facts and applicable requirements are assessed.',
++        'faq' => [
++            ['Can an administration order be removed from my credit profile?', 'The available process depends on the status of the order, the supporting documents and applicable requirements. We can help you understand the next steps, but cannot promise removal before your case is assessed.'],
++            ['What if I have paid the amount owed?', 'Keep payment evidence and any creditor or court correspondence. Payment may be relevant, but the required legal process and credit-record update still need to be confirmed.'],
++            ['Will the service guarantee a better credit score?', 'No. Credit bureaus use their own scoring models. A lawful correction or update may improve the accuracy of your record, but a particular score or credit approval cannot be guaranteed.'],
++            ['What should I bring to the first conversation?', 'Bring your ID, a recent credit report and any administration-order, payment or court documents you have available. We will explain if anything else is needed.'],
++        ],
++        'disclaimer' => 'Administrator Order assistance is subject to the facts of the case and the applicable legal and credit-bureau processes. Removal, discharge, variation, credit-record correction and credit approval are not guaranteed.',
++        'cta_title' => 'Need help understanding an Administrator Order?',
++        'cta_text' => 'Speak to IY Finance Solutions about your credit record and the documents that may support the next step.',
++    ],
++
+ ];
+--- a/includes/service-page.php
++++ b/includes/service-page.php
+@@ -96,6 +96,77 @@
+     </div>
+ </section>
+ 
++<?php if ($serviceSlug === 'credit-clearance'): ?>
++<section class="section credit-clearance-subservices" aria-labelledby="credit-clearance-options-title">
++    <div class="shell">
++        <div class="section-heading centered reveal">
++            <span class="eyebrow">Credit profile solutions</span>
++            <h2 id="credit-clearance-options-title">Let’s address what is holding your credit profile back</h2>
++            <p>Negative listings and outdated information can stand in the way of your next financial step. IY Finance Solutions helps you review the record and follow the appropriate process to challenge, update or resolve eligible items.</p>
++        </div>
++
++        <?php
++        $creditClearanceOptions = [
++            [
++                'icon' => 'fa-triangle-exclamation',
++                'title' => 'Default (Adverse Listing)',
++                'text' => 'Concerned about a default or adverse listing on your credit report? We can review the entry and help pursue removal or correction where the listing is inaccurate, outdated, settled or otherwise eligible under the applicable process.',
++                'points' => ['Review the listing and supporting records', 'Check whether a dispute or update is appropriate'],
++                'message' => 'I would like help reviewing a Default / Adverse Listing on my credit profile.',
++            ],
++            [
++                'icon' => 'fa-handshake',
++                'title' => 'Account Negotiations',
++                'text' => 'If an account is affecting your credit standing, we can discuss available options for engaging with the credit provider, negotiating a resolution where possible, and requesting the correct account update once requirements are met.',
++                'points' => ['Discuss possible settlement or resolution options', 'Help identify evidence needed for an account update'],
++                'message' => 'I would like assistance with Account Negotiations for an account affecting my credit profile.',
++            ],
++            [
++                'icon' => 'fa-scale-balanced',
++                'title' => 'Judgements',
++                'text' => 'A court judgement can have a serious effect on your credit profile. We can help you understand the records and documents involved and guide you through the relevant legal or administrative steps, including a rescission process where applicable.',
++                'points' => ['Review available court and creditor documents', 'Explain the applicable rescission or record-update steps'],
++                'message' => 'I would like assistance reviewing a judgement on my credit profile.',
++            ],
++            [
++                'icon' => 'fa-file-circle-check',
++                'title' => 'Disputes (Updating)',
++                'text' => 'Still seeing incorrect, outdated or unpaid-looking information after a payment or change? We help prepare and follow up valid disputes and update requests with the relevant credit bureau or credit provider using the supporting documents available.',
++                'points' => ['Prepare supporting information for a valid dispute', 'Follow up correction and paid-up or status updates'],
++                'message' => 'I would like help with a credit bureau dispute or updating information on my credit profile.',
++            ],
++        ];
++        ?>
++
++        <div class="credit-clearance-options-grid">
++            <?php foreach ($creditClearanceOptions as $index => $option): ?>
++                <?php $optionWhatsApp = 'https://wa.me/' . $site['whatsapp_link'] . '?text=' . rawurlencode('Hello IY Finance Solutions, ' . $option['message']); ?>
++                <article class="credit-clearance-option-card reveal">
++                    <div class="credit-clearance-option-top">
++                        <span class="credit-clearance-option-icon"><i class="fa-solid <?= h($option['icon']) ?>" aria-hidden="true"></i></span>
++                        <span class="credit-clearance-option-number"><?= str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT) ?></span>
++                    </div>
++                    <h3><?= h($option['title']) ?></h3>
++                    <p><?= h($option['text']) ?></p>
++                    <ul>
++                        <?php foreach ($option['points'] as $point): ?>
++                            <li><i class="fa-solid fa-check" aria-hidden="true"></i><span><?= h($point) ?></span></li>
++                        <?php endforeach; ?>
++                    </ul>
++                    <a class="text-link" href="<?= h($optionWhatsApp) ?>" target="_blank" rel="noopener">Ask about this service <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
++                </article>
++            <?php endforeach; ?>
++        </div>
++
++        <p class="credit-clearance-note">Every case is assessed individually. We do not promise automatic removal of accurate information. Any removal, correction or update depends on the evidence, the relevant credit provider or bureau, and the applicable legal process.</p>
++        <div class="credit-clearance-bottom-cta">
++            <div><h3>Not sure which service you need?</h3><p>Let our team review your concern and explain the next step for your circumstances.</p></div>
++            <a class="button button-primary" href="<?= h(site_url('index.php#contact')) ?>">Request assistance <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
++        </div>
++    </div>
++</section>
++<?php endif; ?>
++
+ <section class="section soft-section service-process-section">
+     <div class="shell">
+         <div class="section-heading centered reveal">
+--- a/assets/css/main.css
++++ b/assets/css/main.css
+@@ -3229,4 +3229,25 @@
+ }
+ .brand-footer span strong {
+     color: var(--green-500);
+-}
+\ No newline at end of file
++}
++
++/* Credit Clearance subservice cards */
++.credit-clearance-subservices { background: #f7faf8; }
++.credit-clearance-subservices .section-heading { max-width: 880px; margin-right: auto; margin-left: auto; }
++.credit-clearance-subservices .section-heading > p { max-width: 760px; margin-right: auto; margin-left: auto; }
++.credit-clearance-options-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; margin-top: 38px; }
++.credit-clearance-option-card { display: flex; flex-direction: column; min-width: 0; padding: 28px; border: 1px solid #e1e8e4; border-radius: var(--radius-md, 8px); background: #fff; box-shadow: 0 10px 28px rgba(15, 45, 34, .055); }
++.credit-clearance-option-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
++.credit-clearance-option-icon { display: inline-grid; width: 48px; height: 48px; place-items: center; border-radius: 10px; color: var(--green-950, #052d22); background: var(--lime-400, #a5d64a); font-size: 1.15rem; }
++.credit-clearance-option-number { color: #9aa9a1; font-size: .82rem; font-weight: 800; letter-spacing: .08em; }
++.credit-clearance-option-card h3 { margin: 0 0 10px; color: var(--green-950, #052d22); font-size: 1.28rem; }
++.credit-clearance-option-card > p { margin: 0 0 18px; color: var(--muted, #66736c); line-height: 1.65; }
++.credit-clearance-option-card ul { display: grid; gap: 9px; padding: 0; margin: 0 0 22px; list-style: none; }
++.credit-clearance-option-card li { display: flex; gap: 9px; color: var(--ink, #26342d); font-size: .9rem; line-height: 1.5; }
++.credit-clearance-option-card li i { margin-top: 4px; color: var(--green-700, #08734d); }
++.credit-clearance-option-card .text-link { align-self: flex-start; margin-top: auto; }
++.credit-clearance-note { max-width: 960px; padding: 14px 17px; margin: 28px auto 0; border-left: 3px solid var(--lime-400, #a5d64a); color: #59675f; background: #eef4f0; font-size: .86rem; line-height: 1.65; }
++.credit-clearance-bottom-cta { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 25px 28px; margin-top: 22px; border: 1px solid #dce7e0; background: #fff; }
++.credit-clearance-bottom-cta h3 { margin: 0 0 5px; color: var(--green-950, #052d22); font-size: 1.18rem; }
++.credit-clearance-bottom-cta p { margin: 0; color: var(--muted, #66736c); }
++@media (max-width: 760px) { .credit-clearance-options-grid { grid-template-columns: 1fr; gap: 15px; margin-top: 26px; } .credit-clearance-option-card { padding: 22px; } .credit-clearance-bottom-cta { align-items: flex-start; flex-direction: column; padding: 22px; } }
+--- /dev/null
++++ b/administrator-order.php
+@@ -0,0 +1,5 @@
++<?php
++declare(strict_types=1);
++require __DIR__ . '/config/bootstrap.php';
++$serviceSlug = 'administrator-order';
++require PROJECT_ROOT . '/includes/service-page.php';
