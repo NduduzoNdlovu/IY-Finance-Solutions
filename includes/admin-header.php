@@ -41,6 +41,9 @@ $isAuthenticated = admin_is_logged_in();
 <a href="<?= h(site_url('admin/credit-enquiries.php')) ?>">
     <i class="fa-solid fa-phone-volume" aria-hidden="true"></i> Credit enquiries
 </a>
+<a href="<?= h(site_url('admin/referrals.php')) ?>">
+    <i class="fa-solid fa-qrcode" aria-hidden="true"></i> QR referrals
+</a>
                 <form action="<?= h(site_url('admin/logout.php')) ?>" method="post">
                     <input type="hidden" name="csrf_token" value="<?= h(csrf_token()) ?>">
                     <button type="submit"><i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i> Sign out</button>

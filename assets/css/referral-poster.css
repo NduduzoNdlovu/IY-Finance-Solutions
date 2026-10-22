@@ -1,0 +1,535 @@
+.poster-admin-toolbar {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-top: 34px;
+    margin-bottom: 24px
+}
+
+.poster-admin-toolbar h1 {
+    margin-bottom: 8px;
+    color: var(--green-950)
+}
+
+.poster-admin-toolbar p {
+    max-width: 680px;
+    margin: 0
+}
+
+.poster-toolbar-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px
+}
+
+.poster-preview-shell {
+    width: min(900px, calc(100% - 32px));
+    margin: 0 auto 60px
+}
+
+.iy-referral-poster {
+    width: 100%;
+    aspect-ratio: 210/297;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 5.5%;
+    background: #fff;
+    color: #132b22;
+    border: 1px solid #dce6e1;
+    box-shadow: 0 16px 55px #052d221c;
+    font-family: "Segoe UI", Inter, Arial, sans-serif
+}
+
+.poster-brand-row {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding-bottom: 3.5%;
+    border-bottom: 2px solid #9bd942
+}
+
+.poster-logo {
+    width: 15%;
+    max-width: 96px;
+    aspect-ratio: 1;
+    object-fit: contain
+}
+
+.poster-brand-copy {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.05
+}
+
+.poster-brand-copy span {
+    font-size: clamp(12px, 2vw, 21px);
+    font-weight: 900;
+    letter-spacing: .09em;
+    color: #073c2d
+}
+
+.poster-brand-copy strong {
+    font-size: clamp(10px, 1.6vw, 16px);
+    letter-spacing: .2em;
+    color: #087859
+}
+
+.poster-brand-copy small {
+    margin-top: 7px;
+    color: #66756f;
+    font-size: clamp(7px, .95vw, 10px)
+}
+
+.poster-brand-badge {
+    margin-left: auto;
+    padding: 9px 12px;
+    background: #073c2d;
+    color: #fff;
+    text-align: center;
+    font-size: clamp(8px, 1.2vw, 13px);
+    font-weight: 900;
+    line-height: 1.35;
+    letter-spacing: .08em
+}
+
+.poster-hero {
+    padding: 5% 0 3%
+}
+
+.poster-kicker {
+    color: #087859;
+    font-size: clamp(8px, 1.15vw, 12px);
+    font-weight: 900;
+    letter-spacing: .18em
+}
+
+.poster-hero h2 {
+    margin: 10px 0 12px;
+    color: #073c2d;
+    font-size: clamp(28px, 5.1vw, 53px);
+    line-height: 1.02;
+    letter-spacing: -.04em
+}
+
+.poster-hero h2 em {
+    color: #087859;
+    font-style: normal
+}
+
+.poster-hero p {
+    max-width: 690px;
+    margin: 0;
+    color: #50635b;
+    font-size: clamp(10px, 1.5vw, 15px);
+    line-height: 1.55
+}
+
+.poster-action-area {
+    display: grid;
+    grid-template-columns: .9fr 1.1fr;
+    gap: 4%;
+    align-items: stretch;
+    margin: 2% 0 4%
+}
+
+.poster-qr-panel {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    padding: 6%;
+    border: 1px solid #dce6e1;
+    background: #f5f8f6;
+    text-align: center
+}
+
+.poster-qr-frame {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    max-width: 244px;
+    aspect-ratio: 1;
+    padding: 7px;
+    background: #fff;
+    border: 1px solid #e1e9e4
+}
+
+.poster-qr-frame canvas {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    max-width: 220px
+}
+
+.poster-qr-frame img {
+    display: none !important
+}
+
+.poster-qr-panel>strong {
+    margin-top: 12px;
+    color: #073c2d;
+    font-size: clamp(9px, 1.3vw, 13px);
+    letter-spacing: .08em
+}
+
+.poster-qr-panel>span {
+    margin-top: 5px;
+    color: #66756f;
+    font-size: clamp(8px, 1vw, 11px)
+}
+
+#qr-status {
+    margin-top: 6px;
+    color: #087859;
+    font-size: clamp(7px, .9vw, 10px)
+}
+
+#qr-status.qr-error {
+    color: #a32820
+}
+
+.poster-contact-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 5%;
+    border-left: 4px solid #9bd942;
+    background: #f8faf9
+}
+
+.poster-contact-panel h3 {
+    margin: 10px 0 20px;
+    color: #073c2d;
+    font-size: clamp(20px, 3.2vw, 34px);
+    line-height: 1.08;
+    overflow-wrap: anywhere
+}
+
+.poster-contact-panel dl {
+    display: grid;
+    gap: 12px;
+    margin: 0
+}
+
+.poster-contact-panel dl>div {
+    padding-bottom: 10px;
+    border-bottom: 1px solid #dce6e1
+}
+
+.poster-contact-panel dt {
+    color: #66756f;
+    font-size: clamp(8px, 1vw, 11px);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em
+}
+
+.poster-contact-panel dd {
+    margin: 4px 0 0;
+    color: #14251f;
+    font-size: clamp(11px, 1.55vw, 16px);
+    font-weight: 750;
+    overflow-wrap: anywhere
+}
+
+.poster-contact-panel dd.poster-referral-id {
+    color: #087859;
+    letter-spacing: .04em
+}
+
+.poster-person-note {
+    margin: 15px 0 0;
+    color: #66756f;
+    font-size: clamp(8px, 1vw, 11px);
+    line-height: 1.45
+}
+
+.poster-benefits {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3%;
+    padding: 4% 0;
+    border-top: 1px solid #dce6e1;
+    border-bottom: 1px solid #dce6e1
+}
+
+.poster-benefits>div {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px
+}
+
+.poster-benefits i {
+    color: #087859;
+    font-size: clamp(13px, 1.8vw, 20px)
+}
+
+.poster-benefits span {
+    display: flex;
+    flex-direction: column;
+    gap: 5px
+}
+
+.poster-benefits strong {
+    color: #073c2d;
+    font-size: clamp(8px, 1.1vw, 12px)
+}
+
+.poster-benefits small {
+    color: #66756f;
+    font-size: clamp(7px, .9vw, 10px);
+    line-height: 1.4
+}
+
+.poster-footer {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 5%;
+    margin-top: auto;
+    padding-top: 4%
+}
+
+.poster-footer>div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px
+}
+
+.poster-footer strong {
+    color: #073c2d;
+    font-size: clamp(9px, 1.2vw, 13px);
+    letter-spacing: .08em
+}
+
+.poster-footer span {
+    color: #50635b;
+    font-size: clamp(7px, .9vw, 10px)
+}
+
+.poster-footer p {
+    max-width: 42%;
+    margin: 0;
+    color: #78847f;
+    font-size: clamp(6px, .8vw, 9px);
+    line-height: 1.4;
+    text-align: right
+}
+
+@media(max-width:620px) {
+    .poster-admin-toolbar {
+        align-items: flex-start;
+        flex-direction: column
+    }
+
+    .poster-toolbar-actions {
+        width: 100%
+    }
+
+    .iy-referral-poster {
+        min-width: 0;
+        padding: 4%
+    }
+
+    .poster-action-area {
+        grid-template-columns: .85fr 1.15fr;
+        gap: 3%
+    }
+
+    .poster-contact-panel {
+        padding: 4%
+    }
+
+    .poster-qr-panel {
+        padding: 4%
+    }
+
+    .poster-hero h2 {
+        font-size: clamp(24px, 5vw, 34px)
+    }
+}
+
+@page {
+    size: A4 portrait;
+    margin: 0
+}
+
+@media print {
+
+    html,
+    body {
+        width: 210mm;
+        height: auto;
+        min-height: 0;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #fff !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important
+    }
+
+    .admin-header,
+    .admin-footer,
+    .poster-admin-toolbar,
+    .flash {
+        display: none !important
+    }
+
+    .admin-main {
+        padding: 0 !important;
+        margin: 0 !important
+    }
+
+    .poster-preview-shell {
+        width: 210mm;
+        height: 297mm;
+        margin: 0 !important;
+        padding: 0 !important
+    }
+
+    .iy-referral-poster {
+        width: 210mm;
+        height: 297mm;
+        aspect-ratio: auto;
+        box-shadow: none;
+        border: 0;
+        padding: 11mm 12mm;
+        break-inside: avoid;
+        page-break-inside: avoid
+    }
+
+    .poster-brand-row {
+        padding-bottom: 7mm
+    }
+
+    .poster-logo {
+        width: 22mm;
+        max-width: none
+    }
+
+    .poster-brand-copy span {
+        font-size: 19pt
+    }
+
+    .poster-brand-copy strong {
+        font-size: 12pt
+    }
+
+    .poster-brand-copy small {
+        font-size: 8pt
+    }
+
+    .poster-brand-badge {
+        font-size: 9pt
+    }
+
+    .poster-hero {
+        padding: 11mm 0 6mm
+    }
+
+    .poster-kicker {
+        font-size: 8pt
+    }
+
+    .poster-hero h2 {
+        font-size: 34pt;
+        margin: 3mm 0
+    }
+
+    .poster-hero p {
+        font-size: 10pt
+    }
+
+    .poster-action-area {
+        gap: 7mm;
+        margin: 3mm 0 8mm
+    }
+
+    .poster-qr-panel {
+        padding: 5mm
+    }
+
+    .poster-qr-frame {
+        width: 65mm;
+        max-width: none;
+        height: 65mm;
+        padding: 2mm
+    }
+
+    .poster-qr-frame canvas {
+        width: 60mm !important;
+        height: 60mm !important;
+        max-width: none
+    }
+
+    .poster-qr-frame img {
+        display: none !important
+    }
+
+    .poster-qr-panel>strong {
+        font-size: 9pt
+    }
+
+    .poster-qr-panel>span {
+        font-size: 8pt
+    }
+
+    #qr-status {
+        font-size: 7pt
+    }
+
+    .poster-contact-panel {
+        padding: 6mm
+    }
+
+    .poster-contact-panel h3 {
+        font-size: 23pt;
+        margin: 4mm 0 6mm
+    }
+
+    .poster-contact-panel dt {
+        font-size: 7pt
+    }
+
+    .poster-contact-panel dd {
+        font-size: 11pt
+    }
+
+    .poster-person-note {
+        font-size: 8pt
+    }
+
+    .poster-benefits {
+        padding: 7mm 0
+    }
+
+    .poster-benefits i {
+        font-size: 14pt
+    }
+
+    .poster-benefits strong {
+        font-size: 8pt
+    }
+
+    .poster-benefits small {
+        font-size: 7pt
+    }
+
+    .poster-footer {
+        padding-top: 7mm
+    }
+
+    .poster-footer strong {
+        font-size: 9pt
+    }
+
+    .poster-footer span {
+        font-size: 7pt
+    }
+
+    .poster-footer p {
+        font-size: 6.5pt
+    }
+}

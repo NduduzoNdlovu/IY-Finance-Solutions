@@ -12,5 +12,19 @@
         "decline_reason_label": "I was told there is an issue with my credit profile",
         "message": "",
         "status": "new"
+    },
+    {
+        "id": "credit-20261022125635-47044fac7f",
+        "created_at": "2026-10-22T12:56:35+00:00",
+        "first_name": "Sibongiseni",
+        "surname": "Ndlovu",
+        "phone": "0740998713",
+        "email": "nduvane635@gmail.com",
+        "credit_type": "vehicle",
+        "credit_type_label": "Vehicle finance",
+        "decline_reason": "declined",
+        "decline_reason_label": "My application was declined",
+        "message": "",
+        "status": "new"
     }
 ]

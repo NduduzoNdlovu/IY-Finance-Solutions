@@ -70,6 +70,20 @@
 
 .credit-filters input,
 .credit-filters select,
+
+.credit-table td[data-label="Referral source"] {
+    min-width: 145px;
+    overflow-wrap: anywhere;
+}
+
+.credit-table td[data-label="Referral source"] small {
+    display: block;
+    margin-top: 4px;
+    color: var(--muted);
+    font-size: .68rem;
+    line-height: 1.35;
+}
+
 .credit-status-form select {
     min-height: 42px;
     width: 100%;

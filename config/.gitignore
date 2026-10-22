@@ -1,0 +1,8 @@
+/storage/admin.json
+/storage/admin.json.tmp-*
+/storage/referrals.json
+/storage/referrals.json.lock
+/storage/referrals.json.tmp-*
+/storage/referral-scans.json
+/storage/referral-scans.json.lock
+/storage/referral-scans.json.tmp-*

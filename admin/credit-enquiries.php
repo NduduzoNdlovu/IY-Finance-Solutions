@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require dirname(__DIR__) . '/config/bootstrap.php';
 require PROJECT_ROOT . '/config/content.php';
+require PROJECT_ROOT . '/config/referrals.php';
 require_admin();
 
 $allowedStatuses = [
@@ -34,18 +35,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $updated = false;
-    foreach ($records as &$record) {
-        if (($record['id'] ?? '') !== $id) {
-            continue;
+    $saved = referral_update_records(CREDIT_ENQUIRIES_FILE, static function (array $currentRecords) use ($id, $status, &$updated): array {
+        foreach ($currentRecords as &$record) {
+            if (($record['id'] ?? '') !== $id) {
+                continue;
+            }
+            $record['status'] = $status;
+            $record['updated_at'] = gmdate('c');
+            $updated = true;
+            break;
         }
-        $record['status'] = $status;
-        $record['updated_at'] = gmdate('c');
-        $updated = true;
-        break;
-    }
-    unset($record);
+        unset($record);
+        return $currentRecords;
+    });
 
-    if (!$updated || !content_write_records(CREDIT_ENQUIRIES_FILE, $records)) {
+    if (!$updated || !$saved) {
         flash_message('error', 'The enquiry could not be updated.');
     } else {
         flash_message('success', 'Enquiry status updated.');
@@ -72,6 +76,8 @@ $filtered = array_values(array_filter($records, static function (array $record) 
         (string) ($record['phone'] ?? ''),
         (string) ($record['email'] ?? ''),
         (string) ($record['credit_type_label'] ?? ''),
+        (string) ($record['referral_id'] ?? ''),
+        (string) ($record['referral_person'] ?? ''),
     ]);
 
     return stripos($haystack, $search) !== false;
@@ -139,6 +145,7 @@ require PROJECT_ROOT . '/includes/admin-header.php';
                             <th>Contact</th>
                             <th>Looking for</th>
                             <th>Reason</th>
+                            <th>Referral source</th>
                             <th>Status</th>
                             <th>Call</th>
                         </tr>
@@ -159,6 +166,14 @@ require PROJECT_ROOT . '/includes/admin-header.php';
                             </td>
                             <td data-label="Looking for"><?= h($record['credit_type_label'] ?? $record['credit_type'] ?? '—') ?></td>
                             <td data-label="Reason"><?= h($record['decline_reason_label'] ?? $record['decline_reason'] ?? '—') ?></td>
+                            <td data-label="Referral source">
+                                <?php if (!empty($record['referral_id'])): ?>
+                                    <strong><?= h((string) ($record['referral_person'] ?? 'Referral')) ?></strong>
+                                    <small><?= h((string) $record['referral_id']) ?></small>
+                                <?php else: ?>
+                                    <span class="muted">Direct / not tracked</span>
+                                <?php endif; ?>
+                            </td>
                             <td data-label="Status">
                                 <form class="credit-status-form" method="post" action="<?= h(site_url('admin/credit-enquiries')) ?>">
                                     <input type="hidden" name="csrf_token" value="<?= h(csrf_token()) ?>">
@@ -173,7 +188,7 @@ require PROJECT_ROOT . '/includes/admin-header.php';
                             <td data-label="Call"><a class="credit-call-button" href="tel:<?= h(preg_replace('/[^0-9+]/', '', (string) ($record['phone'] ?? ''))) ?>"><i class="fa-solid fa-phone-volume" aria-hidden="true"></i> Call</a></td>
                         </tr>
                         <?php if (!empty($record['message'])): ?>
-                            <tr class="credit-message-row"><td colspan="7"><i class="fa-regular fa-message" aria-hidden="true"></i> <strong>Message:</strong> <?= h($record['message']) ?></td></tr>
+                            <tr class="credit-message-row"><td colspan="8"><i class="fa-regular fa-message" aria-hidden="true"></i> <strong>Message:</strong> <?= h($record['message']) ?></td></tr>
                         <?php endif; ?>
                     <?php endforeach; ?>
                     </tbody>

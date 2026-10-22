@@ -209,7 +209,7 @@ return [
     // ],
 'debt-counselling' => [
     'name' => 'Debt Review Removal',
-    'icon' => 'fa-scale-balanced',
+    'icon' => 'k',
     'summary' => 'Understand your options for legally exiting debt review.',
     'hero_image' => 'debt-counselling.webp',
     'hero_position' => 'center right',
