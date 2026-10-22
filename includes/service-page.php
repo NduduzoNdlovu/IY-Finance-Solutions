@@ -122,7 +122,7 @@ require PROJECT_ROOT . '/includes/header.php';
     <div class="shell">
         <div class="section-heading reveal">
             <span class="eyebrow">Prepare with confidence</span>
-            <h2>Is this relevant to you—and what should you prepare?</h2>
+            <h2>Is this relevant to you and what should you prepare?</h2>
             <p>Your first conversation is easier when you know the common situations and information involved.</p>
         </div>
 

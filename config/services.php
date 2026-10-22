@@ -1,74 +1,95 @@
 <?php
 declare(strict_types=1);
-
-/*
- * All public service-page content lives here.
- *
- * The individual service files only set $serviceSlug and load the shared
- * template. This keeps the layout reusable while allowing every service to
- * have complete, unique content.
- */
 return [
-
-
-    'financial-assessment' => [
-        'name' => 'Credit  Assessment',
-        'icon' => 'fa-chart-line',
-        'summary' => 'A clear review of your finances to support better decisions.',
-        'hero_image' => 'financial-assessment.webp',
-        'hero_position' => 'center right',
-        'hero' => 'Clarity for your next financial decision',
-        'lead' => 'Understand your present position before choosing a financial product or solution.',
-        'intro_title' => 'A practical picture of where you stand',
-        'intro' => [
-            'A financial assessment brings your income, expenses, debt and goals into one clear view. It helps identify pressure points and reveals which options may be worth exploring.',
-            'Our team focuses on plain-language explanations and practical next steps that reflect your actual circumstances rather than a one-size-fits-all answer.',
-        ],
-        'quick_title' => 'See the complete monthly picture',
-        'quick_points' => [
-            'Income and essential expenses reviewed together',
-            'Debt commitments placed in context',
-            'Short- and long-term goals considered',
-            'Practical next steps explained clearly',
-        ],
-        'feature_title' => 'What the assessment covers',
-        'features' => [
-            ['Prepare the information', 'Gather reliable income, expense, debt and account information for an accurate discussion.'],
-            ['Review monthly cash flow', 'Compare income with essential expenses, discretionary spending and contractual repayments.'],
-            ['Identify pressure and priorities', 'Highlight shortfalls, high-cost commitments, risks and goals requiring attention.'],
-            ['Build practical next steps', 'Discuss budgeting changes, questions to raise and services that may be relevant to your circumstances.'],
-        ],
-        'suitability_title' => 'A financial assessment can be useful when you are',
-        'suitability' => [
-            'Considering a loan or other financial commitment',
-            'Struggling to understand where monthly income goes',
-            'Experiencing a change in income or household costs',
-            'Trying to prioritise debt and essential expenses',
-            'Planning a realistic short- or long-term financial goal',
-        ],
-        'documents_title' => 'Information that improves the assessment',
-        'documents_note' => 'Bring what is available—the team can explain any missing items.',
-        'documents' => [
-            'Recent proof of income',
-            'Recent bank statements',
-            'A list of essential household expenses',
-            'Loan, credit-card and account statements',
-            'Insurance and recurring debit-order information',
-            'Notes about your immediate concerns and financial goals',
-        ],
-        'outcome_title' => 'A useful next-step plan',
-        'outcome' => 'You receive a clearer understanding of your position, the pressure points to address and the questions to consider before selecting a service, changing your budget or taking on a new commitment.',
-        'faq' => [
-            ['Is the conversation confidential?', 'Yes. Your personal and financial information should be handled confidentially and used only for the explained assessment and service process.'],
-            ['Does an assessment commit me to a product?', 'No. The purpose is to understand your position. You should receive and review the required information before agreeing to any separate product or service.'],
-            ['Do I need perfect records before booking?', 'No. Bring the information you have. Missing statements or unclear expenses can be identified during the conversation so that you know what to gather next.'],
-            ['Can my spouse or partner join the assessment?', 'Yes, where finances are shared and everyone consents, a joint conversation may provide a more accurate household view.'],
-        ],
-        'disclaimer' => 'A financial assessment is based on the accuracy and completeness of the information provided. It does not guarantee product approval or a particular financial result. Product-specific advice and disclosures must follow the applicable process.',
-        'cta_title' => 'Know where you stand',
-        'cta_text' => 'Book a confidential conversation and start with a clearer view of your finances.',
+'financial-assessment' => [
+    'name' => 'Credit Assessment',
+    'icon' => 'fa-chart-line',
+    'summary' => 'Understand your credit profile and explore solutions to improve your credit standing.',
+    'hero_image' => 'financial-assessment.webp',
+    'hero_position' => 'center right',
+    // 'hero' => 'Understand Your Credit Profile. Take Control of Your Financial Future.',
+    'hero' => 'Understand Your Credit. Make Better Financial Decisions.',
+    'lead' => 'Get a comprehensive review of your credit profile, identify potential issues affecting your credit standing, and explore suitable solutions for your financial needs.',
+    'intro_title' => 'A clearer understanding of your credit profile',
+    'intro' => [
+        'Our Credit Assessment, also known as an Affordability Assessment where applicable, involves reviewing your credit profile information to help you understand your current credit standing and identify factors that may affect your financial opportunities.',
+        'Through credit report enquiries across all four credit bureaus, our team helps you understand your credit profile, explore appropriate options for addressing credit-related issues, and assess your potential eligibility for selected loan products. Our aim is to provide clear explanations and practical next steps based on your circumstances.',
     ],
-
+    'quick_title' => 'Discover what your credit profile reveals',
+    'quick_points' => [
+        'Credit report enquiries across all four credit bureaus',
+        'Review of information that may affect your credit standing',
+        'Identification of potential credit-profile issues',
+        'Guidance on suitable credit improvement solutions',
+        'Assessment of potential eligibility for selected loan products',
+    ],
+    'feature_title' => 'What your credit assessment covers',
+    'features' => [
+        [
+            'Review your credit profile',
+            'Examine the available information on your credit reports to help you understand your current credit standing and credit history.'
+        ],
+        [
+            'Identify potential credit issues',
+            'Highlight information that may affect your credit profile, including negative listings, outstanding accounts or information that may require further investigation.'
+        ],
+        [
+            'Explore credit improvement options',
+            'Discuss appropriate steps to address identified issues, including the process for disputing inaccurate or outdated information where applicable.'
+        ],
+        [
+            'Assess potential loan eligibility',
+            'Review relevant credit and affordability information to help determine whether you may qualify for selected loan products, subject to the applicable lending criteria.'
+        ],
+    ],
+    'suitability_title' => 'A credit assessment may be right for you if you are',
+    'suitability' => [
+        'Unsure about your current credit status',
+        'Concerned about negative listings or information on your credit report',
+        'Looking for guidance on improving your credit standing',
+        'Planning to apply for a loan or another credit product',
+        'Experiencing difficulty obtaining credit',
+        'Looking for guidance on addressing inaccurate credit information',
+    ],
+    'documents_title' => 'What to bring to your assessment',
+    'documents_note' => 'Having the relevant information available can help us understand your circumstances and guide you through the assessment process.',
+    'documents' => [
+        'A valid South African ID document',
+        'Recent proof of income, such as payslips',
+        'Latest 3 months bank statements',
+    ],
+    'outcome_title' => 'Take the next step towards a healthier credit profile',
+    'outcome' => 'Your assessment helps you gain a clearer understanding of your credit standing, identify potential issues requiring attention, and explore practical next steps to improve your credit profile or pursue suitable financial solutions. Where applicable, the assessment can also help establish whether you may meet the requirements for selected loan products.',
+    'faq' => [
+        [
+            'What is a Credit Assessment?',
+            'A Credit Assessment is a review of your credit profile to help you understand your credit standing, identify potential issues and explore suitable solutions based on your circumstances.'
+        ],
+        [
+            'What is the difference between a Credit Assessment and an Affordability Assessment?',
+            'A Credit Assessment focuses on your credit profile and credit history. An Affordability Assessment examines your income, expenses and existing financial commitments to help determine whether you can reasonably afford a proposed credit agreement. The assessments may be used together, depending on the service required.'
+        ],
+        [
+            'Does the assessment include all four credit bureaus?',
+            'Our full assessment service includes credit report enquiries across all four credit bureaus. Reviewing the available information helps provide a broader understanding of your credit profile.'
+        ],
+        [
+            'Can you help me clear my name?',
+            'We can help you understand negative listings and other credit-profile concerns and explain the appropriate steps to address them. Where information is inaccurate or outdated, the relevant dispute or correction process may apply. Removal of accurate information cannot be guaranteed and must follow applicable requirements.'
+        ],
+        [
+            'Will I qualify for a loan after the assessment?',
+            'The assessment can help evaluate your potential eligibility for selected loan products. Approval is not guaranteed and depends on the lender’s requirements, affordability checks and other applicable criteria.'
+        ],
+        [
+            'How much does a full Credit Assessment cost?',
+            'Our full Credit Assessment starts from R350.00. Please confirm the applicable fee and what is included with our team before proceeding.'
+        ],
+    ],
+    'disclaimer' => 'A Credit Assessment provides information and guidance based on the credit information available at the time of assessment. It does not guarantee credit approval, the removal of negative listings or a specific financial outcome. Any correction or removal of credit information is subject to the applicable legal requirements and verification process. Loan approval remains subject to the relevant lender’s criteria and affordability assessment.',
+    'cta_title' => 'Ready to understand your credit standing?',
+    'cta_text' => 'Take the first step towards understanding your credit profile. Book your full Credit Assessment from R350.00 and let our team guide you through your available options.',
+],
 
   'personal-loans' => [
         'name' => 'Personal Loans',
@@ -129,64 +150,147 @@ return [
     ],
 
 
-    'debt-counselling' => [
-        'name' => 'Debt Counselling',
-        'icon' => 'fa-scale-balanced',
-        'summary' => 'Structured debt support designed to help you regain control.',
-        'hero_image' => 'debt-counselling.webp',
-        'hero_position' => 'center right',
-        'hero' => 'A structured route toward manageable repayments',
-        'lead' => 'Get professional guidance when monthly commitments have become difficult to manage.',
-        'intro_title' => 'Understand your options before making your next move',
-        'intro' => [
-            'Debt counselling, also known as debt review, is a regulated process intended to help over-indebted consumers restructure monthly repayments into an amount they can reasonably afford.',
-            'Our team explains each stage clearly, assesses your circumstances and helps you understand whether this route is appropriate for you. The aim is a realistic repayment path—not a quick promise or another loan.',
-        ],
-        'quick_title' => 'Support built around your position',
-        'quick_points' => [
-            'A confidential affordability assessment',
-            'A clear explanation of the regulated process',
-            'Guidance on the repayment proposal',
-            'Ongoing communication and progress support',
-        ],
-        'feature_title' => 'How the debt-counselling process works',
-        'features' => [
-            ['Financial assessment', 'Your income, essential living expenses and credit commitments are reviewed confidentially.'],
-            ['Suitability review', 'We explain whether debt counselling may be appropriate and discuss the important consequences.'],
-            ['Repayment proposal', 'Where suitable, a more affordable repayment proposal is prepared for participating credit providers.'],
-            ['Formal process and support', 'The application follows the applicable regulated process, with communication throughout the repayment journey.'],
-        ],
-        'suitability_title' => 'Debt counselling may be worth discussing if you are',
-        'suitability' => [
-            'Falling behind on several credit agreements',
-            'Using one account or loan to pay another',
-            'Unable to cover essential expenses after repayments',
-            'Receiving frequent calls or notices from credit providers',
-            'Looking for a regulated and structured repayment route',
-        ],
-        'documents_title' => 'Documents commonly requested',
-        'documents_note' => 'The exact list is confirmed after your first conversation.',
-        'documents' => [
-            'South African ID or valid identification',
-            'Recent payslips or other proof of income',
-            'Recent 3 months bank statement',
-            // 'Statements for credit accounts and loans',
-            // 'A realistic list of monthly household expenses',
-            // 'Relevant letters or notices from credit providers',
-        ],
-        'outcome_title' => 'Who may benefit',
-        'outcome' => 'Debt counselling may be suitable if you are struggling to keep up with several accounts, regularly falling behind, or feeling overwhelmed by creditor contact. Eligibility, repayment terms and the time required depend on your individual circumstances.',
-        'faq' => [
-            ['Is debt counselling the same as taking a consolidation loan?', 'No. Debt counselling is a regulated debt-relief process and does not give you a new loan. It assesses affordability and may restructure qualifying repayments through the applicable formal process.'],
-            ['Can I apply for new credit while under debt review?', 'Consumers under debt review are generally restricted from taking further credit until the process has been completed and the applicable clearance requirements have been met. Your adviser will explain this before you proceed.'],
-            ['How long does debt counselling take?', 'There is no single period for everyone. It depends on your total debt, agreed repayments, interest arrangements and whether payments are maintained.'],
-            ['Will debt counselling remove all my debt?', 'No. It is designed to make repayment more manageable, not erase valid debt. The goal is to complete the agreed repayment obligations through a structured process.'],
-        ],
-        'disclaimer' => 'Debt counselling is a regulated process with important legal and credit implications. Eligibility and results cannot be guaranteed. Applicable fees, restrictions and process requirements must be explained before you agree to proceed.',
-        'cta_title' => 'Ready to understand your debt options?',
-        'cta_text' => 'Request a confidential, no-obligation conversation with our team.',
+    // 'debt-counselling' => [
+    //     'name' => 'Debt Counselling',
+    //     'icon' => 'fa-scale-balanced',
+    //     'summary' => 'Structured debt support designed to help you regain control.',
+    //     'hero_image' => 'debt-counselling.webp',
+    //     'hero_position' => 'center right',
+    //     'hero' => 'A structured route toward manageable repayments',
+    //     'lead' => 'Get professional guidance when monthly commitments have become difficult to manage.',
+    //     'intro_title' => 'Understand your options before making your next move',
+    //     'intro' => [
+    //         'Debt counselling, also known as debt review, is a regulated process intended to help over-indebted consumers restructure monthly repayments into an amount they can reasonably afford.',
+    //         'Our team explains each stage clearly, assesses your circumstances and helps you understand whether this route is appropriate for you. The aim is a realistic repayment path—not a quick promise or another loan.',
+    //     ],
+    //     'quick_title' => 'Support built around your position',
+    //     'quick_points' => [
+    //         'A confidential affordability assessment',
+    //         'A clear explanation of the regulated process',
+    //         'Guidance on the repayment proposal',
+    //         'Ongoing communication and progress support',
+    //     ],
+    //     'feature_title' => 'How the debt-counselling process works',
+    //     'features' => [
+    //         ['Financial assessment', 'Your income, essential living expenses and credit commitments are reviewed confidentially.'],
+    //         ['Suitability review', 'We explain whether debt counselling may be appropriate and discuss the important consequences.'],
+    //         ['Repayment proposal', 'Where suitable, a more affordable repayment proposal is prepared for participating credit providers.'],
+    //         ['Formal process and support', 'The application follows the applicable regulated process, with communication throughout the repayment journey.'],
+    //     ],
+    //     'suitability_title' => 'Debt counselling may be worth discussing if you are',
+    //     'suitability' => [
+    //         'Falling behind on several credit agreements',
+    //         'Using one account or loan to pay another',
+    //         'Unable to cover essential expenses after repayments',
+    //         'Receiving frequent calls or notices from credit providers',
+    //         'Looking for a regulated and structured repayment route',
+    //     ],
+    //     'documents_title' => 'Documents commonly requested',
+    //     'documents_note' => 'The exact list is confirmed after your first conversation.',
+    //     'documents' => [
+    //         'South African ID or valid identification',
+    //         'Recent payslips or other proof of income',
+    //         'Recent 3 months bank statement',
+    //         // 'Statements for credit accounts and loans',
+    //         // 'A realistic list of monthly household expenses',
+    //         // 'Relevant letters or notices from credit providers',
+    //     ],
+    //     'outcome_title' => 'Who may benefit',
+    //     'outcome' => 'Debt counselling may be suitable if you are struggling to keep up with several accounts, regularly falling behind, or feeling overwhelmed by creditor contact. Eligibility, repayment terms and the time required depend on your individual circumstances.',
+    //     'faq' => [
+    //         ['Is debt counselling the same as taking a consolidation loan?', 'No. Debt counselling is a regulated debt-relief process and does not give you a new loan. It assesses affordability and may restructure qualifying repayments through the applicable formal process.'],
+    //         ['Can I apply for new credit while under debt review?', 'Consumers under debt review are generally restricted from taking further credit until the process has been completed and the applicable clearance requirements have been met. Your adviser will explain this before you proceed.'],
+    //         ['How long does debt counselling take?', 'There is no single period for everyone. It depends on your total debt, agreed repayments, interest arrangements and whether payments are maintained.'],
+    //         ['Will debt counselling remove all my debt?', 'No. It is designed to make repayment more manageable, not erase valid debt. The goal is to complete the agreed repayment obligations through a structured process.'],
+    //     ],
+    //     'disclaimer' => 'Debt counselling is a regulated process with important legal and credit implications. Eligibility and results cannot be guaranteed. Applicable fees, restrictions and process requirements must be explained before you agree to proceed.',
+    //     'cta_title' => 'Ready to understand your debt options?',
+    //     'cta_text' => 'Request a confidential, no-obligation conversation with our team.',
+    // ],
+'debt-counselling' => [
+    'name' => 'Debt Review Removal',
+    'icon' => 'fa-scale-balanced',
+    'summary' => 'Understand your options for legally exiting debt review.',
+    'hero_image' => 'debt-counselling.webp',
+    'hero_position' => 'center right',
+    'hero' => 'Ready to move forward without debt review?',
+    'lead' => 'Find out whether you qualify for debt review removal and get professional guidance on the way forward.',
+    'intro_title' => 'Understand your options for debt review removal',
+    'intro' => [
+        'If you are currently under debt review, you may be wondering whether you can legally exit the process. Your options depend on your financial circumstances, repayment status and the applicable legal requirements.',
+        'Our team helps you understand your position, assess the available options and navigate the appropriate process. We provide clear guidance so you can make informed decisions about your financial future.',
     ],
-
+    'quick_title' => 'Guidance tailored to your situation',
+    'quick_points' => [
+        'A confidential review of your current debt review status',
+        'An assessment of your potential eligibility for removal',
+        'Clear guidance on the applicable legal process',
+        'Assistance with understanding the required documents',
+    ],
+    'feature_title' => 'How the debt review removal process works',
+    'features' => [
+        [
+            'Initial assessment',
+            'We review your current debt review status, financial circumstances and relevant repayment information.'
+        ],
+        [
+            'Eligibility evaluation',
+            'Your circumstances are assessed to establish which legal options, if any, may be available to end your debt review status.'
+        ],
+        [
+            'Guidance and documentation',
+            'If a suitable route is identified, we explain the applicable requirements and help you understand which supporting documents are needed.'
+        ],
+        [
+            'Removal process and updates',
+            'Where appropriate, the relevant process is followed in accordance with applicable legal requirements, with updates on your case progress.'
+        ],
+    ],
+    'suitability_title' => 'Debt review removal may be worth exploring if you are',
+    'suitability' => [
+        'Currently under debt review and want to understand your exit options',
+        'Experiencing improved financial circumstances',
+        'Able to meet your credit repayment obligations and seeking advice on your status',
+        'Unsure whether your debt review status can legally be terminated',
+        'Looking for professional guidance on the next steps',
+    ],
+    'documents_title' => 'Documents commonly requested',
+    'documents_note' => 'The exact documents required depend on your circumstances and the applicable removal process.',
+    'documents' => [
+        'South African ID or valid identification',
+        'Latest debt review court order or relevant debt review documents, if available',
+        'Latest 3 months bank statements',
+        'Recent payslips or other proof of income, where applicable',
+        'Current credit report or details of your credit agreements, if available',
+    ],
+    'outcome_title' => 'Who may qualify for debt review removal',
+    'outcome' => 'Your eligibility depends on your individual circumstances, the status of your debt review, your repayment position and the legal requirements applicable to your case. An assessment can help clarify whether a lawful route to removal may be available. Removal is not automatic, and a successful outcome cannot be guaranteed.',
+    'faq' => [
+        [
+            'Can I be removed from debt review?',
+            'Possibly. The available options depend on your circumstances and the applicable legal requirements. An assessment of your debt review status is the best starting point.'
+        ],
+        [
+            'Can I apply for debt review removal if I still owe money?',
+            'Having outstanding debt does not, by itself, determine whether removal is possible. The applicable legal route depends on factors such as your debt review status, repayment position and individual circumstances.'
+        ],
+        [
+            'How long does debt review removal take?',
+            'The timeframe varies depending on your circumstances, the applicable process, the documents required and any relevant court or administrative procedures. A specific timeframe cannot be guaranteed.'
+        ],
+        [
+            'Will my credit profile be updated after removal?',
+            'Where removal is lawfully completed, the relevant notifications and credit bureau updates must follow the applicable requirements. The timing of updates may vary, and removal does not automatically erase valid credit history or outstanding debt.'
+        ],
+        [
+            'Does debt review removal guarantee that I can get credit again?',
+            'No. Removal may change your debt review status, but credit providers still assess applications according to their own affordability, creditworthiness and lending criteria.'
+        ],
+    ],
+    'disclaimer' => 'Debt review removal is subject to the National Credit Act and other applicable legal requirements. Eligibility, processing times and outcomes vary according to individual circumstances. Removal cannot be guaranteed, and outstanding debts and credit obligations do not automatically disappear. Any fees, requirements and limitations should be explained before you agree to proceed.',
+    'cta_title' => 'Ready to explore your debt review exit options?',
+    'cta_text' => 'Request a confidential, no-obligation assessment to understand whether you may qualify for debt review removal.',
+],
   
     'legal-insurance' => [
         'name' => 'Legal Insurance',
