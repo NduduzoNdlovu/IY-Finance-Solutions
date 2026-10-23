@@ -404,61 +404,86 @@ return [
         'cta_title' => 'Protect your family’s peace of mind',
         'cta_text' => 'Talk to an adviser about cover suited to your household and budget.',
     ],
-
-    'administrator-order' => [
-        'name' => 'Admin Order Removal',
-        'icon' => 'fa-file-signature',
-        'summary' => 'Guidance for reviewing an administration order and understanding the lawful steps that may apply to your credit record.',
-        'hero_image' => 'credit-clearance.webp',
-        'hero_position' => 'center right',
-        'hero' => 'Understand your Administration  Order and your options',
-        'lead' => 'Get clear guidance on how an administration order may affect your credit profile and what steps may be available for review, variation, discharge or record updates.',
-        'intro_title' => 'A clear path to understanding your administration order',
-        'intro' => [
-            'An administration order may affect your credit standing and future applications. We help you understand the information shown on your credit report, identify the relevant documents and discuss the appropriate process for your circumstances.',
-            'Where the order has been paid, discharged, varied or recorded incorrectly, supporting evidence may be needed to pursue the relevant legal or credit-record update. The available outcome depends on the facts and applicable process.',
-        ],
-        'quick_title' => 'Understand the record and next steps',
-        'quick_points' => [
-            'Review the administration-order entry on your credit profile',
-            'Identify relevant court, payment and creditor documents',
-            'Explain possible discharge, variation or update steps',
-            'Help follow up eligible credit-record corrections',
-        ],
-        'feature_title' => 'How our Administrator Order assistance works',
-        'features' => [
-            ['Review your credit record', 'Check how the administration order is reflected and whether the details appear consistent with the information you provide.'],
-            ['Check the supporting documents', 'Identify available court orders, payment records, correspondence and other documents relevant to your case.'],
-            ['Explain the appropriate process', 'Discuss the applicable next steps, which may include obtaining advice, applying for discharge or variation, or requesting an update where legally supported.'],
-            ['Follow up eligible updates', 'Help track the relevant request and check the credit record after a decision or update has been processed.'],
-        ],
-        'suitability_title' => 'You may need Administrator Order assistance if you want to',
-        'suitability' => [
-            'Understand how an administration order affects your credit profile',
-            'Check whether a paid or discharged order is reflected correctly',
-            'Understand which court or payment documents may be required',
-            'Explore the process for a correction, discharge or variation where applicable',
-        ],
-        'documents_title' => 'Documents that may help with your review',
-        'documents_note' => 'The documents needed depend on the status and history of the order.',
-        'documents' => [
-            'South African ID Documents',
-            'Latest 3 months bank statements showing payments where relevant',
-            'Latest payslips or proof of income where relevant',
-            // 'Payment confirmations or creditor statements where relevant',
-            // 'Correspondence relating to discharge, variation or prior updates',
-        ],
-        'outcome_title' => 'Know which steps are available to you',
-        'outcome' => 'Our aim is to help you understand the status of the order and pursue the correct process where a review, discharge, variation or credit-record update may be appropriate. No removal or outcome can be guaranteed before the facts and applicable requirements are assessed.',
-        'faq' => [
-            ['Can an administration order be removed from my credit profile?', 'The available process depends on the status of the order, the supporting documents and applicable requirements. We can help you understand the next steps, but cannot promise removal before your case is assessed.'],
-            ['What if I have paid the amount owed?', 'Keep payment evidence and any creditor or court correspondence. Payment may be relevant, but the required legal process and credit-record update still need to be confirmed.'],
-            ['Will the service guarantee a better credit score?', 'No. Credit bureaus use their own scoring models. A lawful correction or update may improve the accuracy of your record, but a particular score or credit approval cannot be guaranteed.'],
-            ['What should I bring to the first conversation?', 'Bring your ID, a recent credit report and any administration-order, payment or court documents you have available. We will explain if anything else is needed.'],
-        ],
-        'disclaimer' => 'Administrator Order assistance is subject to the facts of the case and the applicable legal and credit-bureau processes. Removal, discharge, variation, credit-record correction and credit approval are not guaranteed.',
-        'cta_title' => 'Need help understanding an Administrator Order?',
-        'cta_text' => 'Speak to IY Finance Solutions about your credit record and the documents that may support the next step.',
+'administrator-order' => [
+    'name' => 'Administration Order Removal',
+    'icon' => 'fa-file-signature',
+    'summary' => 'Get assistance with removing an administration order from your credit profile through the applicable legal process.',
+    'hero_image' => 'credit-clearance.webp',
+    'hero_position' => 'center right',
+    'hero' => 'Administration Order Removal Assistance',
+    'lead' => 'Struggling with an administration order on your credit profile? IY Finance Solutions can help you understand the removal process, identify the required documents and take the appropriate steps towards having an eligible administration order removed.',
+    'intro_title' => 'Take the next step towards removing your administration order',
+    'intro' => [
+        'An administration order can affect your credit profile and make it more difficult to access credit. If you have an administration order on your record, IY Finance Solutions can assist you in understanding your options and working through the applicable process for removal.',
+        'Depending on your circumstances, this may involve reviewing the court order, checking payment history, identifying whether discharge or variation is required, and following up on eligible credit-record updates. The correct process depends on your case and the applicable legal requirements.',
     ],
+    'quick_title' => 'How we can assist you',
+    'quick_points' => [
+        'Review the administration order reflected on your credit profile',
+        'Identify the documents needed to support your case',
+        'Assist with understanding the applicable removal or discharge process',
+        'Help follow up on eligible court and credit-record updates',
+    ],
+    'feature_title' => 'Our Administration Order Removal Process',
+    'features' => [
+        [
+            'Review your credit profile',
+            'We review the administration-order information available and identify the details that need to be checked.'
+        ],
+        [
+            'Assess your circumstances',
+            'We help identify relevant court documents, payment records and other supporting evidence needed to determine the appropriate next steps.'
+        ],
+        [
+            'Assist with the removal process',
+            'Where your circumstances qualify, we assist you in understanding and pursuing the applicable process for discharge, variation or removal of the administration order.'
+        ],
+        [
+            'Follow up on your credit record',
+            'Where a discharge, court decision or correction has been processed, we help follow up on eligible updates to ensure your credit record reflects the relevant outcome.'
+        ],
+    ],
+    'suitability_title' => 'Our service may be suitable if you want to',
+    'suitability' => [
+        'Explore the removal of an administration order from your credit profile',
+        'Check whether a paid or discharged order is still appearing on your record',
+        'Understand the process when an administration order is no longer applicable',
+        'Get assistance with the documents and steps required for a lawful removal or correction',
+    ],
+    'documents_title' => 'Documents that may be required',
+    'documents_note' => 'Requirements depend on your circumstances. We will advise you on the relevant documents after reviewing your case.',
+    'documents' => [
+        'South African ID document',
+        'Recent 3 months bank statements',
+        'Latest payslips or proof of income',
+    ],
+    'outcome_title' => 'Work towards removing your administration order',
+    'outcome' => 'Our aim is to help you pursue the appropriate process for removing an administration order where legally permitted. The outcome depends on your circumstances, supporting documents and the applicable legal process. Removal, discharge, credit-record updates and future credit approval cannot be guaranteed.',
+    'faq' => [
+        [
+            'Can I have an administration order removed from my credit profile?',
+            'Removal may be possible depending on the status of the order and the applicable legal process. We can help you understand your options and the steps that may apply to your case.'
+        ],
+        [
+            'What if I have already paid my debts?',
+            'Proof of payment may be relevant, but payment alone does not necessarily remove an administration order. The applicable discharge process and any required credit-record updates must be confirmed.'
+        ],
+        [
+            'How long does administration order removal take?',
+            'The time depends on the circumstances, any required court process and the response times of the relevant parties or credit bureaus. We will explain the expected steps once your case has been assessed.'
+        ],
+        [
+            'Will removing an administration order guarantee credit approval?',
+            'No. Credit providers make their own lending decisions. An eligible removal or correction may improve the accuracy of your credit profile, but it does not guarantee a particular credit score or approval.'
+        ],
+        [
+            'What should I bring for an assessment?',
+            'Bring your ID, a recent credit report and any court, administration-order or payment documents you have available. We will advise you if additional documents are needed.'
+        ],
+    ],
+    'disclaimer' => 'Administration Order Removal Assistance is subject to eligibility, supporting evidence and the applicable legal process. IY Finance Solutions does not guarantee removal, discharge, variation, credit-record correction, a particular credit score or credit approval.',
+    'cta_title' => 'Ready to explore Administration Order Removal?',
+    'cta_text' => 'Contact IY Finance Solutions for assistance with reviewing your credit profile and understanding the next steps towards removing an eligible administration order.',
+],
 
 ];

@@ -192,7 +192,7 @@ require PROJECT_ROOT . '/includes/header.php';
         <div class="media-collage reveal">
             <img src="<?= h(asset_url('images/hero/family.webp')) ?>" alt="A South African family reviewing financial information together" width="1940" height="805" loading="lazy">
             <!-- <div class="experience-badge"><strong>10</strong><span>Years of trusted service</span></div> -->
-       <div class="experience-badge"><strong data-count-to="10">10</strong><span>Years of trusted service</span></div>
+       <div class="experience-badge"><strong data-count-to="9">9</strong><span>Years of trusted service</span></div>
         </div>
         <div class="section-copy reveal">
             <span class="eyebrow">Who we are</span>
