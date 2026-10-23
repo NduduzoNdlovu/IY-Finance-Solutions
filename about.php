@@ -26,7 +26,7 @@ require PROJECT_ROOT . '/includes/header.php';
     <div class="shell story-layout">
         <div class="story-image reveal">
             <img src="<?= h(asset_url('images/prosper.png')) ?>" alt="Family discussing their financial future" width="1940" height="805">
-            <div class="story-stamp"><span>Serving clients</span><strong>Since 2016</strong></div>
+            <div class="story-stamp"><span>Serving clients</span><strong>Since 2018</strong></div>
         </div>
         <div class="section-copy reveal">
             <span class="eyebrow">Our story</span>
