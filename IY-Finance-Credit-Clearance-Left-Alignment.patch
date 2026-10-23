@@ -1,0 +1,28 @@
+diff --git a/assets/css/main.css b/assets/css/main.css
+index 810df4a..8585dc5 100644
+--- a/assets/css/main.css
++++ b/assets/css/main.css
+@@ -3233,8 +3233,8 @@ html {
+ 
+ /* Credit Clearance subservice cards */
+ .credit-clearance-subservices { background: #f7faf8; }
+-.credit-clearance-subservices .section-heading { max-width: 880px; margin-right: auto; margin-left: auto; }
+-.credit-clearance-subservices .section-heading > p { max-width: 760px; margin-right: auto; margin-left: auto; }
++.credit-clearance-subservices .section-heading { max-width: 880px; margin-right: 0; margin-left: 0; text-align: left; }
++.credit-clearance-subservices .section-heading > p { max-width: 760px; margin-right: 0; margin-left: 0; text-align: left; }
+ .credit-clearance-options-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; margin-top: 38px; }
+ .credit-clearance-option-card { display: flex; flex-direction: column; min-width: 0; padding: 28px; border: 1px solid #e1e8e4; border-radius: var(--radius-md, 8px); background: #fff; box-shadow: 0 10px 28px rgba(15, 45, 34, .055); }
+ .credit-clearance-option-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+diff --git a/includes/service-page.php b/includes/service-page.php
+index 2fe5aa6..bd26b28 100644
+--- a/includes/service-page.php
++++ b/includes/service-page.php
+@@ -99,7 +99,7 @@ require PROJECT_ROOT . '/includes/header.php';
+ <?php if ($serviceSlug === 'credit-clearance'): ?>
+ <section class="section credit-clearance-subservices" aria-labelledby="credit-clearance-options-title">
+     <div class="shell">
+-        <div class="section-heading centered reveal">
++        <div class="section-heading reveal">
+             <span class="eyebrow">Credit profile solutions</span>
+             <h2 id="credit-clearance-options-title">Let’s address what is holding your credit profile back</h2>
+             <p>Negative listings and outdated information can stand in the way of your next financial step. IY Finance Solutions helps you review the record and follow the appropriate process to challenge, update or resolve eligible items.</p>

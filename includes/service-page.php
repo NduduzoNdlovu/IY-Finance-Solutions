@@ -99,7 +99,7 @@ require PROJECT_ROOT . '/includes/header.php';
 <?php if ($serviceSlug === 'credit-clearance'): ?>
 <section class="section credit-clearance-subservices" aria-labelledby="credit-clearance-options-title">
     <div class="shell">
-        <div class="section-heading centered reveal">
+        <div class="section-heading reveal">
             <span class="eyebrow">Credit profile solutions</span>
             <h2 id="credit-clearance-options-title">Let’s address what is holding your credit profile back</h2>
             <p>Negative listings and outdated information can stand in the way of your next financial step. IY Finance Solutions helps you review the record and follow the appropriate process to challenge, update or resolve eligible items.</p>
@@ -169,7 +169,7 @@ require PROJECT_ROOT . '/includes/header.php';
 
 <section class="section soft-section service-process-section">
     <div class="shell">
-        <div class="section-heading centered reveal">
+        <div class="section-heading  reveal">
             <span class="eyebrow">What to expect</span>
             <h2><?= h($service['feature_title']) ?></h2>
             <p>We keep every stage clear, practical and easy to understand.</p>
