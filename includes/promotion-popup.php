@@ -38,15 +38,16 @@ declare(strict_types=1);
                     <li>Defaults</li>
                     <li>Judgments</li>
                     <li>Garnishee order</li>
+                      <li>Disputes</li>
                 </ul>
             </div>
-
+         
             <div class="iy-promo__offer">
-                <span>Personal loans</span>
-                <strong>From R500 to R8&nbsp;000</strong>
+                <span>Personal loans / Vehicle financing / Home loans</span>
+                <strong>From R500 to R20&nbsp;000</strong>
                 <small>Applications are subject to affordability assessment and approval.</small>
+                <small><em style="font-weight: bold;color:red;">Notice:</em> To apply for a loan, you must visit your nearest IY Finance Solutions branch. We do not offer online loan applications.</small>
             </div>
-
             <div class="iy-promo__bottom-grid">
                 <div class="iy-promo__block">
                     <p class="iy-promo__label"><i class="bi bi-file-earmark-check" aria-hidden="true"></i> Documents needed</p>

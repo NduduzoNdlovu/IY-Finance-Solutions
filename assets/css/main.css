@@ -2901,7 +2901,9 @@ button:focus-visible {
         --radius: 18px;
         --radius-lg: 24px;
     }
-
+.scroll-cue{
+    display: none;
+}
     .section {
         padding: 70px 0;
     }

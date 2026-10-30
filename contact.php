@@ -104,7 +104,7 @@ require PROJECT_ROOT . '/includes/header.php';
         <div class="contact-form-intro reveal">
             <span class="eyebrow">Send us a message</span>
             <h2>Tell us how we can assist you.</h2>
-            <p>Complete the form and our team will receive your message securely at <strong>info@iyfinancesolutions.co.za</strong>.</p>
+            <p>Complete the form and our team will receive your message securely at <strong>enquiries@iyfinancesolutions.co.za</strong>.</p>
 
             <div class="contact-form-trust">
                 <div>
