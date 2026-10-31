@@ -57,6 +57,7 @@ require PROJECT_ROOT . '/includes/admin-header.php';
                 <dl>
                     <div><dt>Place / area</dt><dd><?= h((string) $record['place']) ?></dd></div>
                     <div><dt>Work / organisation</dt><dd><?= h((string) $record['work']) ?></dd></div>
+                    <?php if (trim((string) ($record['phone'] ?? '')) !== ''): ?><div><dt>Cellphone</dt><dd><?= h((string) $record['phone']) ?></dd></div><?php endif; ?>
                     <div><dt>Referral ID</dt><dd class="poster-referral-id"><?= h($referralId) ?></dd></div>
                 </dl>
                 <p class="poster-person-note">Mention this referral contact when enquiring so our team can assist you.</p>
@@ -70,7 +71,7 @@ require PROJECT_ROOT . '/includes/admin-header.php';
         </section>
 
         <footer class="poster-footer">
-            <div><strong>IY FINANCE SOLUTIONS</strong><span>www.iyfinancesolutions.co.za</span><span>info@iyfinancesolutions.co.za · 031 140 0378</span></div>
+            <div><strong>IY FINANCE SOLUTIONS</strong><span>www.iyfinancesolutions.co.za</span><span>enquiries@iyfinancesolutions.co.za · 031 140 0378</span></div>
             <p>Services are subject to eligibility and applicable terms. An enquiry does not guarantee approval or a particular outcome.</p>
         </footer>
     </article>

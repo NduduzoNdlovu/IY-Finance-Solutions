@@ -11,6 +11,7 @@ $errors = [];
 $fullName = '';
 $place = '';
 $work = '';
+$phone = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!csrf_is_valid($_POST['csrf_token'] ?? null)) {
@@ -24,15 +25,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $fullName = preg_replace('/\s+/u', ' ', trim((string) ($_POST['full_name'] ?? ''))) ?? '';
         $place = preg_replace('/\s+/u', ' ', trim((string) ($_POST['place'] ?? ''))) ?? '';
         $work = preg_replace('/\s+/u', ' ', trim((string) ($_POST['work'] ?? ''))) ?? '';
+        $phone = preg_replace('/\s+/u', ' ', trim((string) ($_POST['phone'] ?? ''))) ?? '';
 
         if (function_exists('mb_strlen')) {
             if (mb_strlen($fullName, 'UTF-8') < 2 || mb_strlen($fullName, 'UTF-8') > 120) $errors[] = 'Enter a full name between 2 and 120 characters.';
             if (mb_strlen($place, 'UTF-8') < 2 || mb_strlen($place, 'UTF-8') > 120) $errors[] = 'Enter the place or area for this referral person.';
             if (mb_strlen($work, 'UTF-8') < 2 || mb_strlen($work, 'UTF-8') > 120) $errors[] = 'Enter their work, role or organisation.';
+            if ($phone !== '' && !preg_match('/^[0-9+()\s-]{7,25}$/', $phone)) $errors[] = 'Enter a valid cellphone number or leave it blank.';
         } else {
             if (strlen($fullName) < 2 || strlen($fullName) > 120) $errors[] = 'Enter a full name between 2 and 120 characters.';
             if (strlen($place) < 2 || strlen($place) > 120) $errors[] = 'Enter the place or area for this referral person.';
             if (strlen($work) < 2 || strlen($work) > 120) $errors[] = 'Enter their work, role or organisation.';
+            if ($phone !== '' && !preg_match('/^[0-9+()\s-]{7,25}$/', $phone)) $errors[] = 'Enter a valid cellphone number or leave it blank.';
         }
 
         if ($errors === []) {
@@ -42,6 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'full_name' => $fullName,
                 'place' => $place,
                 'work' => $work,
+                'phone' => $phone,
                 'active' => true,
                 'created_at' => gmdate('c'),
                 'created_by' => (string) ($_SESSION['admin_username'] ?? 'admin'),
@@ -115,6 +120,7 @@ require PROJECT_ROOT . '/includes/admin-header.php';
                 <label><span>Full name</span><input name="full_name" value="<?= h($fullName) ?>" maxlength="120" autocomplete="name" required placeholder="e.g. Patrick Mthembu"></label>
                 <label><span>Place / area</span><input name="place" value="<?= h($place) ?>" maxlength="120" required placeholder="e.g. West Smith, Durban"></label>
                 <label><span>Work / role / organisation</span><input name="work" value="<?= h($work) ?>" maxlength="120" required placeholder="e.g. Community referral partner"></label>
+                <label><span>Cellphone number <small>(optional — appears on the QR poster if provided)</small></span><input type="tel" name="phone" value="<?= h($phone) ?>" maxlength="25" autocomplete="tel" placeholder="e.g. 082 123 4567"></label>
                 <button class="admin-button primary" type="submit"><i class="fa-solid fa-qrcode" aria-hidden="true"></i> Create referral &amp; poster</button>
             </form>
             <p class="referral-help"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> Each profile gets its own permanent referral URL. Scans and credit-assistance enquiries are attributed to that ID.</p>
@@ -160,7 +166,7 @@ require PROJECT_ROOT . '/includes/admin-header.php';
                     ?>
                     <tr>
                         <td><strong><?= h((string) ($record['full_name'] ?? '')) ?></strong><small>Created <?= h(date('d M Y', strtotime((string) ($record['created_at'] ?? 'now')))) ?></small></td>
-                        <td><?= h((string) ($record['place'] ?? '')) ?><small><?= h((string) ($record['work'] ?? '')) ?></small></td>
+                        <td><?= h((string) ($record['place'] ?? '')) ?><small><?= h((string) ($record['work'] ?? '')) ?></small><?php if (trim((string) ($record['phone'] ?? '')) !== ''): ?><small><i class="fa-solid fa-phone" aria-hidden="true"></i> <?= h((string) $record['phone']) ?></small><?php endif; ?></td>
                         <td><code><?= h($rid) ?></code></td>
                         <td><?= number_format($scanCount) ?></td>
                         <td><?= number_format($leadCount) ?></td>
@@ -174,6 +180,35 @@ require PROJECT_ROOT . '/includes/admin-header.php';
                                 <button class="admin-button small <?= !empty($record['active']) ? 'danger' : 'secondary' ?>" type="submit"><?= !empty($record['active']) ? 'Deactivate' : 'Activate' ?></button>
                             </form>
                         </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+        <p class="referral-footnote">A scan is recorded when a referral link opens. The referral ID and referral person are stored with every scan so the admin can see exactly which referral link was used.</p>
+    </section>
+
+    <section class="admin-card referral-list-card">
+        <div class="admin-card-heading">
+            <span class="card-icon"><i class="fa-solid fa-qrcode" aria-hidden="true"></i></span>
+            <div><h2>Recent QR scans</h2><p>See which referral link was opened and when.</p></div>
+        </div>
+        <div class="referral-table-wrap">
+            <table class="referral-table">
+                <thead><tr><th>Referral person</th><th>Referral ID</th><th>Scanned</th></tr></thead>
+                <tbody>
+                <?php
+                $recentScans = array_slice(array_reverse($scans), 0, 20);
+                ?>
+                <?php if ($recentScans === []): ?>
+                    <tr><td colspan="3" class="empty-cell">No QR scans have been recorded yet.</td></tr>
+                <?php endif; ?>
+                <?php foreach ($recentScans as $scan): ?>
+                    <?php $scanReferral = referral_find_by_id((string) ($scan['referral_id'] ?? '')); ?>
+                    <tr>
+                        <td><strong><?= h((string) ($scan['referral_person'] ?? ($scanReferral['full_name'] ?? 'Unknown referral'))) ?></strong></td>
+                        <td><code><?= h((string) ($scan['referral_id'] ?? '')) ?></code></td>
+                        <td><?= h((string) ($scan['scanned_at'] ?? '')) ?></td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>

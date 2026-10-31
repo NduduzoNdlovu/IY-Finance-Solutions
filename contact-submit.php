@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 require __DIR__ . '/config/bootstrap.php';
 
-const CONTACT_RECIPIENT = 'info@iyfinancesolutions.co.za';
-const CONTACT_SENDER = 'info@iyfinancesolutions.co.za';
+const CONTACT_RECIPIENT = 'enquiries@iyfinancesolutions.co.za';
+const CONTACT_SENDER = 'enquiries@iyfinancesolutions.co.za';
 const CONTACT_RATE_LIMIT_SECONDS = 30;
 
 function contact_input(string $key): string
@@ -108,7 +108,7 @@ $sent = mail(
 if (!$sent) {
     contact_redirect(
         'error',
-        'We could not send your message right now. Please email info@iyfinancesolutions.co.za directly or try again later.',
+        'We could not send your message right now. Please email enquiries@iyfinancesolutions.co.za directly or try again later.',
         $old
     );
 }

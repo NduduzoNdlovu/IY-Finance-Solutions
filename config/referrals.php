@@ -153,15 +153,16 @@ function referral_store_attribution(string $referralId): void
     ]);
 }
 
-function referral_log_scan(string $referralId, ?string $scanId = null, ?string $scannedAt = null): bool
+function referral_log_scan(string $referralId, ?string $scanId = null, ?string $scannedAt = null, ?array $referral = null): bool
 {
     $scanId ??= 'scan-' . bin2hex(random_bytes(8));
     $scannedAt ??= gmdate('c');
 
-    return referral_update_records(REFERRAL_SCANS_FILE, static function (array $records) use ($referralId, $scanId, $scannedAt): array {
+    return referral_update_records(REFERRAL_SCANS_FILE, static function (array $records) use ($referralId, $scanId, $scannedAt, $referral): array {
         $records[] = [
             'id' => $scanId,
             'referral_id' => $referralId,
+            'referral_person' => (string) ($referral['full_name'] ?? ''),
             'scanned_at' => $scannedAt,
         ];
         return $records;
@@ -171,8 +172,8 @@ function referral_log_scan(string $referralId, ?string $scanId = null, ?string $
 /** Send an email for every valid referral-link visit. */
 function referral_email_scan_notification(array $referral, string $referralId, string $scanId, string $scannedAt): bool
 {
-    $recipient = 'info@iyfinancesolutions.co.za';
-    $sender = 'info@iyfinancesolutions.co.za';
+    $recipient = 'enquiries@iyfinancesolutions.co.za';
+    $sender = 'enquiries@iyfinancesolutions.co.za';
     $safeReferralId = preg_replace('/[^A-Z0-9-]/', '', strtoupper($referralId)) ?? '';
 
     try {

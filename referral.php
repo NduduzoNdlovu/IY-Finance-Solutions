@@ -408,7 +408,8 @@ $scannedAt = gmdate('c');
 if (!referral_log_scan(
     $referralId,
     $scanId,
-    $scannedAt
+    $scannedAt,
+    $referral
 )) {
     error_log(
         'IY referral scan could not be recorded for '
@@ -429,7 +430,8 @@ if (!referral_email_scan_notification(
     $referral,
     $referralId,
     $scanId,
-    $scannedAt
+    $scannedAt,
+    $referral
 )) {
     error_log(
         'IY referral scan notification email could not be sent for '
@@ -448,4 +450,4 @@ referral_store_attribution($referralId);
 /*
  * Send visitor to Credit Assistance.
  */
-redirect_to('credit-assistance.php');
+redirect_to('credit-assistance.php?ref=' . rawurlencode($referralId));

@@ -6,6 +6,14 @@ require PROJECT_ROOT . '/config/content.php';
 require PROJECT_ROOT . '/config/referrals.php';
 start_admin_session();
 
+$incomingReferralId = strtoupper(trim((string) ($_GET['ref'] ?? $_POST['ref'] ?? '')));
+if ($incomingReferralId !== '' && preg_match('/^IYF-[0-9]{8}-[A-F0-9]{6}$/', $incomingReferralId)) {
+    $incomingReferral = referral_find_by_id($incomingReferralId);
+    if ($incomingReferral !== null && !empty($incomingReferral['active'])) {
+        referral_store_attribution($incomingReferralId);
+    }
+}
+
 $pageTitle = 'Credit Assistance | IY Finance Solutions';
 $pageDescription = 'Were you declined for credit? Tell IY Finance Solutions what you were trying to purchase or apply for and our team will contact you.';
 $activePage = 'credit-assistance';
@@ -123,6 +131,7 @@ require PROJECT_ROOT . '/includes/header.php';
                     <?php endif; ?>
 
                     <form class="credit-form" method="post" action="<?= h(site_url('credit-assistance.php')) ?>">
+                        <?php if ($incomingReferralId !== ''): ?><input type="hidden" name="ref" value="<?= h($incomingReferralId) ?>"><?php endif; ?>
                         <input class="credit-honeypot" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
                         <div class="credit-form-heading"><span class="eyebrow">Get started</span><h2>Tell us about your enquiry</h2><p>Fields marked with * are required.</p></div>
                         <div class="credit-form-grid">

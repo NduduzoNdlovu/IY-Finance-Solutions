@@ -20,7 +20,7 @@ if ($referral === null || empty($referral['active'])) {
 
 // Do not store IP addresses or device fingerprints. A visit is a scan/open event,
 // not a verified unique person; link preview bots can also trigger a visit.
-if (!referral_log_scan($referralId)) {
+if (!referral_log_scan($referralId, null, null, $referral)) {
     error_log('IY referral scan could not be recorded for ' . $referralId);
 }
 referral_store_attribution($referralId);
