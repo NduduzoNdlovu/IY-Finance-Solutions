@@ -1,3 +1,6 @@
 /storage/admin.json
 /storage/admin.json.tmp-*
-
+# Runtime JSON data is persistent application state and must never be deployed from Git.
+/storage/*.json
+/storage/*.json.tmp-*
+/storage/*.lock

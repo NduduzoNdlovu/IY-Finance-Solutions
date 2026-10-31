@@ -8,7 +8,6 @@ deployment:
     - /bin/cp -R config $DEPLOYPATH
     - /bin/cp -R includes $DEPLOYPATH
     - /bin/cp -R uploads $DEPLOYPATH
-    - /bin/cp -R storage $DEPLOYPATH
     - /bin/cp .htaccess $DEPLOYPATH
     - /bin/cp .user.ini $DEPLOYPATH
     - /bin/cp *.php $DEPLOYPATH

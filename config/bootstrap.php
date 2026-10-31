@@ -3,9 +3,58 @@ declare(strict_types=1);
 
 define('PROJECT_ROOT', dirname(__DIR__));
 define('GALLERY_DIRECTORY', PROJECT_ROOT . '/uploads/gallery');
-define('STORAGE_DIRECTORY', PROJECT_ROOT . '/storage');
+
+// Runtime data must live outside the Git/deployment directory. Deployments can
+// safely replace the application files without replacing enquiries, referrals,
+// feedback, events, updates, or the admin account. Set IY_STORAGE_DIRECTORY
+// when a custom persistent location is required; otherwise the parent of the
+// application directory is used (for example /home/ACCOUNT/iy-finance-data).
+$configuredStorageDirectory = getenv('IY_STORAGE_DIRECTORY');
+$runtimeStorageDirectory = is_string($configuredStorageDirectory) && trim($configuredStorageDirectory) !== ''
+    ? rtrim($configuredStorageDirectory, '/\\')
+    : dirname(PROJECT_ROOT) . '/iy-finance-data';
+
+define('LEGACY_STORAGE_DIRECTORY', PROJECT_ROOT . '/storage');
+define('STORAGE_DIRECTORY', $runtimeStorageDirectory);
 define('ADMIN_RECORD_FILE', STORAGE_DIRECTORY . '/admin.json');
 define('CREDIT_ENQUIRIES_FILE', STORAGE_DIRECTORY . '/credit-enquiries.json');
+
+/**
+ * Create the persistent data directory and migrate legacy JSON data from the
+ * old project-local storage directory once. Existing persistent files are
+ * never overwritten by the migration.
+ */
+function initialise_runtime_storage(): void
+{
+    if (!is_dir(STORAGE_DIRECTORY) && !mkdir(STORAGE_DIRECTORY, 0750, true) && !is_dir(STORAGE_DIRECTORY)) {
+        return;
+    }
+
+    $legacyFiles = [
+        'admin.json',
+        'client-feedback.json',
+        'credit-enquiries.json',
+        'events.json',
+        'referral-scans.json',
+        'referrals.json',
+        'updates.json',
+    ];
+
+    foreach ($legacyFiles as $filename) {
+        $source = LEGACY_STORAGE_DIRECTORY . '/' . $filename;
+        $target = STORAGE_DIRECTORY . '/' . $filename;
+
+        if (!is_file($source) || is_file($target)) {
+            continue;
+        }
+
+        if (@copy($source, $target)) {
+            @chmod($target, 0640);
+        }
+    }
+}
+
+initialise_runtime_storage();
 
 $site = [
     'name' => 'IY Finance Solutions',
