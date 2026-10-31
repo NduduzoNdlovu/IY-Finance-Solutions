@@ -430,8 +430,7 @@ if (!referral_email_scan_notification(
     $referral,
     $referralId,
     $scanId,
-    $scannedAt,
-    $referral
+    $scannedAt
 )) {
     error_log(
         'IY referral scan notification email could not be sent for '

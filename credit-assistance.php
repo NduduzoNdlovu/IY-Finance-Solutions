@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/config/bootstrap.php';
 require PROJECT_ROOT . '/config/content.php';
+require PROJECT_ROOT . '/config/referrals.php';
 
 $pageTitle = 'Credit Assistance | IY Finance Solutions';
 $pageDescription = 'Were you declined for credit? Tell IY Finance Solutions what you were trying to purchase or apply for and our team will contact you.';
@@ -28,6 +29,17 @@ $declineReasons = [
     'credit-profile' => 'I was told there is an issue with my credit profile',
     'unsure' => 'I am not sure why I was declined', 'other' => 'Other',
 ];
+
+$referralId = referral_current_id();
+$referralFromRequest = strtoupper(trim((string) ($_GET['ref'] ?? $_POST['referral_id'] ?? '')));
+if ($referralFromRequest !== '' && preg_match('/^IYF-[0-9]{8}-[A-F0-9]{6}$/', $referralFromRequest)) {
+    $requestedReferral = referral_find_by_id($referralFromRequest);
+    if ($requestedReferral !== null && !empty($requestedReferral['active'])) {
+        referral_store_attribution($referralFromRequest);
+        $referralId = $referralFromRequest;
+    }
+}
+$referralRecord = $referralId !== '' ? referral_find_by_id($referralId) : null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     foreach ($submitted as $field => $value) {
@@ -59,6 +71,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($errors === []) {
+        // Resolve the referral again on the server before saving it. Never trust
+        // the displayed referral name from the browser.
+        $submittedReferralId = strtoupper(trim((string) ($_POST['referral_id'] ?? '')));
+        $currentReferralId = referral_current_id();
+        $candidateReferralId = $submittedReferralId !== '' ? $submittedReferralId : $currentReferralId;
+        $candidateReferral = null;
+
+        if ($candidateReferralId !== '' && preg_match('/^IYF-[0-9]{8}-[A-F0-9]{6}$/', $candidateReferralId)) {
+            $candidateReferral = referral_find_by_id($candidateReferralId);
+        }
+
+        if ($candidateReferral !== null && !empty($candidateReferral['active'])) {
+            $referralId = (string) ($candidateReferral['referral_id'] ?? $candidateReferralId);
+            $referralRecord = $candidateReferral;
+            referral_store_attribution($referralId);
+        } else {
+            $referralId = '';
+            $referralRecord = null;
+        }
+
         $records = content_read_records(CREDIT_ENQUIRIES_FILE);
         $records[] = [
             'id' => content_new_id('credit'), 'created_at' => gmdate('c'),
@@ -69,6 +101,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'decline_reason' => $submitted['decline_reason'],
             'decline_reason_label' => $declineReasons[$submitted['decline_reason']],
             'message' => $submitted['message'], 'status' => 'new',
+            'referral_id' => $referralRecord !== null ? (string) ($referralRecord['referral_id'] ?? '') : '',
+            'referral_person' => $referralRecord !== null ? (string) ($referralRecord['full_name'] ?? '') : '',
         ];
 
         if (content_write_records(CREDIT_ENQUIRIES_FILE, $records)) {
@@ -118,6 +152,7 @@ require PROJECT_ROOT . '/includes/header.php';
                     <?php endif; ?>
 
                     <form class="credit-form" method="post" action="<?= h(site_url('credit-assistance.php')) ?>">
+                        <input type="hidden" name="referral_id" value="<?= h($referralRecord !== null ? (string) ($referralRecord['referral_id'] ?? '') : '') ?>">
                         <input class="credit-honeypot" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
                         <div class="credit-form-heading"><span class="eyebrow">Get started</span><h2>Tell us about your enquiry</h2><p>Fields marked with * are required.</p></div>
                         <div class="credit-form-grid">
@@ -129,6 +164,12 @@ require PROJECT_ROOT . '/includes/header.php';
                         <label><span>What were you trying to purchase or apply for? *</span><select name="credit_type" required><option value="">Please select</option><?php foreach ($creditTypes as $value => $label): ?><option value="<?= h($value) ?>" <?= $submitted['credit_type'] === $value ? 'selected' : '' ?>><?= h($label) ?></option><?php endforeach; ?></select></label>
                         <label><span>What happened? *</span><select name="decline_reason" required><option value="">Please select</option><?php foreach ($declineReasons as $value => $label): ?><option value="<?= h($value) ?>" <?= $submitted['decline_reason'] === $value ? 'selected' : '' ?>><?= h($label) ?></option><?php endforeach; ?></select></label>
                         <label><span>Anything else you would like us to know? <small>(optional)</small></span><textarea name="message" rows="3" maxlength="1000" placeholder="Briefly tell us what happened."><?= h($submitted['message']) ?></textarea></label>
+                        <?php if ($referralRecord !== null): ?>
+                            <div class="credit-form-heading" role="status" aria-label="Referral confirmation">
+                                <span class="eyebrow"><i class="fa-solid fa-qrcode" aria-hidden="true"></i> Referral confirmation</span>
+                                <p>You were referred by <strong><?= h((string) ($referralRecord['full_name'] ?? 'Referral')) ?></strong>. Referral code: <code><?= h((string) ($referralRecord['referral_id'] ?? '')) ?></code></p>
+                            </div>
+                        <?php endif; ?>
                         <label class="credit-consent"><input type="checkbox" name="consent" value="1" required><span>I agree that IY Finance Solutions may contact me about this enquiry and use the information provided to respond to my request.</span></label>
                         <button class="button button-accent credit-submit" type="submit"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i> Submit my enquiry</button>
                     </form>
