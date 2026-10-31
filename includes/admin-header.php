@@ -21,7 +21,7 @@ $adminNavigation = [
     <meta name="robots" content="noindex,nofollow">
     <meta name="theme-color" content="#073c2d">
     <title><?= h($adminTitle) ?> | <?= h($site['name']) ?></title>
-    <link rel="icon" type="image/svg+xml" href="<?= h(asset_url('images/IY Finance.png')) ?>">
+    <link rel="icon" type="image/svg+xml" href="<?= h(asset_url('images/logo/IY finance.webp')) ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link rel="stylesheet" href="<?= h(asset_url('css/admin.css')) ?>">
     <?php foreach (($adminPageStyles ?? []) as $adminPageStyle): ?>
@@ -32,7 +32,7 @@ $adminNavigation = [
 <header class="admin-header">
     <div class="admin-topbar">
         <a class="admin-brand" href="<?= h(site_url('admin/')) ?>">
-            <img src="<?= h(asset_url('images/logoimg.png')) ?>" alt="" width="44" height="44">
+            <img src="<?= h(asset_url('images/logo/IY finance.webp')) ?>" alt="" width="44" height="44">
             <span><strong>IY Finance</strong><small>Website administration</small></span>
         </a>
         <?php if ($isAuthenticated): ?>

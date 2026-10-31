@@ -28,6 +28,7 @@ $servicesForFooter = require PROJECT_ROOT . '/config/services.php';
             <p><?= h($site['description']) ?></p>
             <div class="social-links" aria-label="Social media">
                 <a href="<?= h($site['facebook']) ?>" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a>
+                 <a href="<?= h($site['tiktok']) ?>" target="_blank" rel="noopener" aria-label="TikTok"><i class="bi bi-tiktok" aria-hidden="true"></i></a>
                 <a href="<?= h($site['twitter']) ?>" target="_blank" rel="noopener" aria-label="X"><i class="fa-brands fa-x-twitter" aria-hidden="true"></i></a>
                 <a href="<?= h($site['linkedin']) ?>" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in" aria-hidden="true"></i></a>
             </div>

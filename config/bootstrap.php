@@ -72,6 +72,7 @@ $site = [
     'fsp' => '49179',
     'ncrcp' => '8769',
     'facebook' => 'https://www.facebook.com/iyfinancesolutions.co.za',
+    'tiktok' => 'https://www.tiktok.com/@iy_finance_solutions',
     'twitter' => 'https://twitter.com/IYFinSolutions',
     'linkedin' => 'https://www.linkedin.com/company/iy-finance-solution/',
 ];
