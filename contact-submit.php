@@ -41,10 +41,11 @@ if (!csrf_is_valid(contact_input('csrf_token'))) {
 }
 
 $name = preg_replace('/\s+/u', ' ', contact_input('name')) ?? '';
+$contact_number = contact_input('contact_number');
 $email = contact_input('email');
 $message = preg_replace("/\r\n?|\r/", "\n", contact_input('message')) ?? '';
 $honeypot = contact_input('company_website');
-$old = ['name' => $name, 'email' => $email, 'message' => $message];
+$old = ['name' => $name, 'contact_number' => $contact_number, 'email' => $email, 'message' => $message];
 
 // Bots commonly complete this hidden field. Return a normal-looking success response.
 if ($honeypot !== '') {
@@ -60,6 +61,9 @@ $errors = [];
 if (contact_length($name) < 2 || contact_length($name) > 100) {
     $errors[] = 'Enter a valid full name.';
 }
+if (contact_length($contact_number) < 10 || contact_length($contact_number) > 20) {
+    $errors[] = 'Enter a valid contact number.';
+}
 if (contact_length($email) > 254 || filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
     $errors[] = 'Enter a valid email address.';
 }
@@ -72,7 +76,8 @@ if ($errors !== []) {
 }
 
 $safeName = str_replace(["\r", "\n"], ' ', $name);
-$safeEmail = str_replace(["\r", "\n"], '', $email);
+    $safeEmail = str_replace(["\r", "\n"], '', $email);
+    $safeContactNumber = str_replace(["\r", "\n"], '', $contact_number);
 $submittedAt = date('Y-m-d H:i:s T');
 
 $body = implode("\n", [
@@ -80,6 +85,7 @@ $body = implode("\n", [
     '===========================',
     '',
     'Name: ' . $safeName,
+    'Contact Number: ' . $safeContactNumber,
     'Email: ' . $safeEmail,
     'Submitted: ' . $submittedAt,
     '',

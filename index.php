@@ -83,7 +83,7 @@ require PROJECT_ROOT . '/includes/header.php';
                         <span>Registered credit provider</span>
                     </div>
                     <div class="trust-row">
-                        <strong>Since 2016</strong>
+                        <strong>Since 2018</strong>
                         <span>Serving South African consumers</span>
                     </div>
                 </aside>

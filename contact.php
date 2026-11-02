@@ -144,14 +144,20 @@ require PROJECT_ROOT . '/includes/header.php';
                     </div>
 
                     <div class="contact-field">
+                        <label for="contact-number">Contact Number<span aria-hidden="true">*</span></label>
+                        <div class="contact-input-wrap">
+                            <i class="fa-regular bi bi-telephone" aria-hidden="true"></i>
+                            <input id="contact-number" name="contact_number" type="tel" value="<?= h((string) ($contactFormOld['contact_number'] ?? '')) ?>" maxlength="20" autocomplete="tel" required>
+                        </div>
+                    </div>
+                </div>
+                    <div class="contact-field">
                         <label for="contact-email">Email address <span aria-hidden="true">*</span></label>
                         <div class="contact-input-wrap">
                             <i class="fa-regular fa-envelope" aria-hidden="true"></i>
                             <input id="contact-email" name="email" type="email" value="<?= h((string) ($contactFormOld['email'] ?? '')) ?>" maxlength="254" autocomplete="email" required>
                         </div>
                     </div>
-                </div>
-
                 <div class="contact-field">
                     <div class="contact-label-row">
                         <label for="contact-message">How can we assist? <span aria-hidden="true">*</span></label>
