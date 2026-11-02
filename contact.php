@@ -151,6 +151,8 @@ require PROJECT_ROOT . '/includes/header.php';
                         </div>
                     </div>
                 </div>
+
+                  <div class="contact-field-grid">
                     <div class="contact-field">
                         <label for="contact-email">Email address <span aria-hidden="true">*</span></label>
                         <div class="contact-input-wrap">
@@ -158,6 +160,14 @@ require PROJECT_ROOT . '/includes/header.php';
                             <input id="contact-email" name="email" type="email" value="<?= h((string) ($contactFormOld['email'] ?? '')) ?>" maxlength="254" autocomplete="email" required>
                         </div>
                     </div>
+                    <div class="contact-field">
+                        <label for="contact-location">Postal address</label>
+                        <div class="contact-input-wrap">
+                            <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                            <input id="contact-location" name="location" type="text" value="<?= h((string) ($contactFormOld['location'] ?? '')) ?>" maxlength="200" autocomplete="off">
+                        </div>
+                    </div>
+                </div>
                 <div class="contact-field">
                     <div class="contact-label-row">
                         <label for="contact-message">How can we assist? <span aria-hidden="true">*</span></label>
