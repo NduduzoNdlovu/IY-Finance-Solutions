@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/config/bootstrap.php';
 
-const CONTACT_RECIPIENT = 'tracing@iyfinancesolutions.co.za';
+const CONTACT_RECIPIENT = 'enquiries@iyfinancesolutions.co.za';
 const CONTACT_SENDER = 'enquiries@iyfinancesolutions.co.za';
 const CONTACT_RATE_LIMIT_SECONDS = 30;
 
