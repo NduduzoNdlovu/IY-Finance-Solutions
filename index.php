@@ -17,8 +17,8 @@ $pageTitle = 'IY Finance Solutions | Professional Financial Services in South Af
 $pageDescription = 'IY Finance Solutions provides debt counselling, personal-loan guidance, funeral cover, legal insurance, credit-clearance support and financial assessments.';
 $activePage = 'home';
 $bodyClass = 'home-page';
-$pageStyles = ['css/home-animations.css','css/client-feedback.css'];
-$pageStyles[] = 'css/home-content-preview.css';
+$pageStyles = ['css/home-content-preview.css','css/home-animations.css','css/client-feedback.css'];
+// $pageStyles[] = ;
 $pageScript = 'home-animations.js';
     $homeHeroImages = [
         //   'images/home-hero/confidence.png',

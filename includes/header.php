@@ -19,14 +19,30 @@ $servicesForNavigation = require PROJECT_ROOT . '/config/services.php';
     <meta property="og:description" content="<?= h($pageDescription) ?>">
     <meta property="og:image" content="<?= h(site_url('assets/images/logo/og-image.jpg')) ?>">
     <title><?= h($pageTitle) ?></title>
-    <link rel="icon" type="image/svg+xml" href="<?= h(asset_url('images/logo/IY finance.webp')) ?>">
+    <link rel="icon" type="image/webp" href="<?= h(asset_url('images/logo/IY finance.webp')) ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="<?= h(asset_url('css/main.css')) ?>">
+<?php
+$versionedAsset = static function (string $path): string {
+    $file = PROJECT_ROOT . '/assets/' . ltrim($path, '/');
+    $version = is_file($file) ? (string) filemtime($file) : (string) time();
+
+    return asset_url($path) . '?v=' . rawurlencode($version);
+};
+?>
+
+<link rel="stylesheet" href="<?= h($versionedAsset('css/main.css')) ?>">
+<link rel="stylesheet" href="<?= h($versionedAsset('css/promotion-popup.css')) ?>">
+
+<?php foreach (($pageStyles ?? []) as $pageStyle): ?>
+    <link rel="stylesheet" href="<?= h($versionedAsset($pageStyle)) ?>">
+<?php endforeach; ?>
+    <!-- <link rel="stylesheet" href="<?= h(asset_url('css/main.css')) ?>">
        <link rel="stylesheet" href="<?= h(asset_url('css/promotion-popup.css')) ?>">
        <?php foreach (($pageStyles ?? []) as $pageStyle): ?>
         <link rel="stylesheet" href="<?= h(asset_url($pageStyle)) ?>">
-    <?php endforeach; ?>
+    <?php endforeach; ?> -->
+
 </head>
 <body class="<?= h($bodyClass) ?>">
 <a class="skip-link" href="#main-content">Skip to main content</a>
