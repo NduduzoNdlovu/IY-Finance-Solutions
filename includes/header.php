@@ -22,26 +22,12 @@ $servicesForNavigation = require PROJECT_ROOT . '/config/services.php';
     <link rel="icon" type="image/webp" href="<?= h(asset_url('images/logo/IY finance.webp')) ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-<?php
-$versionedAsset = static function (string $path): string {
-    $file = PROJECT_ROOT . '/assets/' . ltrim($path, '/');
-    $version = is_file($file) ? (string) filemtime($file) : (string) time();
 
-    return asset_url($path) . '?v=' . rawurlencode($version);
-};
-?>
-
-<link rel="stylesheet" href="<?= h($versionedAsset('css/main.css')) ?>">
-<link rel="stylesheet" href="<?= h($versionedAsset('css/promotion-popup.css')) ?>">
-
-<?php foreach (($pageStyles ?? []) as $pageStyle): ?>
-    <link rel="stylesheet" href="<?= h($versionedAsset($pageStyle)) ?>">
-<?php endforeach; ?>
-    <!-- <link rel="stylesheet" href="<?= h(asset_url('css/main.css')) ?>">
+    <link rel="stylesheet" href="<?= h(asset_url('css/main.css')) ?>">
        <link rel="stylesheet" href="<?= h(asset_url('css/promotion-popup.css')) ?>">
        <?php foreach (($pageStyles ?? []) as $pageStyle): ?>
         <link rel="stylesheet" href="<?= h(asset_url($pageStyle)) ?>">
-    <?php endforeach; ?> -->
+    <?php endforeach; ?>
 
 </head>
 <body class="<?= h($bodyClass) ?>">
