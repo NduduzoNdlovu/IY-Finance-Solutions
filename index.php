@@ -17,7 +17,7 @@ $pageTitle = 'IY Finance Solutions | Professional Financial Services in South Af
 $pageDescription = 'IY Finance Solutions provides debt counselling, personal-loan guidance, funeral cover, legal insurance, credit-clearance support and financial assessments.';
 $activePage = 'home';
 $bodyClass = 'home-page';
-$pageStyles = ['css/home-content-preview.css','css/home-animations.css','css/client-feedback.css'];
+$pageStyles = ['css/home-content-preview.css','css/home-animations.css','css/client-feedback.css','css/home-services-cards.css'];
 // $pageStyles[] = ;
 $pageScript = 'home-animations.js';
     $homeHeroImages = [
@@ -153,7 +153,7 @@ require PROJECT_ROOT . '/includes/header.php';
     </div>
 </section>
 
-<section class="section services-section" id="services">
+<section class="section services-section  iy-green-theme" id="services">
     <div class="shell">
         <div class="section-heading split-heading reveal">
             <div>
@@ -165,14 +165,38 @@ require PROJECT_ROOT . '/includes/header.php';
 
         <div class="services-grid">
             <?php foreach ($services as $slug => $service): ?>
+                <?php
+                    // These images already exist in assets/images/services_cards/.
+                    $serviceCardImages = [
+                        'financial-assessment' => 'credit-assessment.jpg',
+                        'personal-loans' => 'loan.png',
+                        'debt-counselling' => 'debt-review-removal.jpg',
+                        'legal-insurance' => 'legal-insurance.jpg',
+                        'credit-clearance' => 'credit-clearance.jpg',
+                        'funeral-cover' => 'funeral-cover.jpg',
+                         'administrator-order' => 'adminOrder.png',
+                    ];
+                    $serviceImage = $serviceCardImages[$slug] ?? '';
+                ?>
                 <article class="service-card reveal">
-                    <div class="service-card-top">
-                        <span class="service-card-icon"><i class="fa-solid <?= h($service['icon']) ?>" aria-hidden="true"></i></span>
+                    <div class="service-card-visual" aria-hidden="true">
+                        <?php if ($serviceImage !== ''): ?>
+                            <img src="<?= h(asset_url('images/services_cards/' . $serviceImage)) ?>"
+                                 alt="" loading="lazy" decoding="async">
+                        <?php else: ?>
+                            <span class="service-card-visual-fallback"><i class="fa-solid <?= h($service['icon']) ?>"></i></span>
+                        <?php endif; ?>
                         <span class="service-card-number"><?= str_pad((string) (array_search($slug, array_keys($services), true) + 1), 2, '0', STR_PAD_LEFT) ?></span>
                     </div>
-                    <h3><?= h($service['name']) ?></h3>
-                    <p><?= h($service['summary']) ?></p>
-                    <a href="<?= h(site_url($slug . '.php')) ?>">Learn more <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+                    <div class="service-card-content">
+                        <div class="service-card-icon"><i class="fa-solid <?= h($service['icon']) ?>" aria-hidden="true"></i></div>
+                        <h3><?= h($service['name']) ?></h3>
+                        <p><?= h($service['summary']) ?></p>
+                        <a href="<?= h(site_url($slug . '.php')) ?>" aria-label="Learn more about <?= h($service['name']) ?>">
+                            <span>Explore service</span>
+                            <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                        </a>
+                    </div>
                 </article>
             <?php endforeach; ?>
         </div>

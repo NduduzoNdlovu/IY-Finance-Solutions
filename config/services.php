@@ -405,7 +405,7 @@ return [
         'cta_text' => 'Talk to an adviser about cover suited to your household and budget.',
     ],
 'administrator-order' => [
-    'name' => 'Administration Order Removal',
+    'name' => 'Admin Order Removal',
     'icon' => 'fa-file-signature',
     'summary' => 'Get assistance with removing an administration order from your credit profile through the applicable legal process.',
     'hero_image' => 'credit-clearance.webp',
