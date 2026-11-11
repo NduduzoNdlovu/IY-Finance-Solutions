@@ -63,7 +63,7 @@ require PROJECT_ROOT . '/includes/header.php';
         <div class="home-hero-designs" data-home-hero-designs aria-live="polite">
             <article class="home-hero-design is-active" data-home-hero-design="0">
                 <div class="hero-copy">
-                    <span class="hero-kicker"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Trusted financial guidance since 2016</span>
+                    <span class="hero-kicker"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Trusted financial guidance since 2018</span>
                     <h1>A clearer path to <em>financial freedom.</em></h1>
                     <p>Practical solutions, respectful support and straight answers for every step of your financial journey.</p>
                     <div class="hero-actions">
