@@ -294,7 +294,7 @@ return [
 'administrator-order' => [
     'name' => 'Admin Order Removal',
     'icon' => 'fa-file-signature',
-    'summary' => 'Get assistance with removing an administration order from your credit profile through the applicable legal process.',
+    'summary' => 'Get assistance with removing an administration order from your credit profile.',
     'hero_image' => 'credit-clearance.webp',
     'hero_position' => 'center right',
     'hero' => 'Administration Order Removal Assistance',
