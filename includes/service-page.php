@@ -16,6 +16,7 @@ $pageTitle = $service['name'] . ' | ' . $site['name'];
 $pageDescription = $service['summary'];
 $activePage = 'services';
 $bodyClass = 'service-page service-' . $serviceSlug;
+$pageStyles = $serviceSlug === 'legal-insurance' ? ['css/legal-insurance.css'] : [];
 
 
 $heroImageUrl = asset_url('images/services/' . $service['hero_image']);
@@ -96,6 +97,177 @@ require PROJECT_ROOT . '/includes/header.php';
     </div>
 </section>
 
+<?php if ($serviceSlug === 'legal-insurance'): ?>
+<section class="section legal-plans-section" id="legal-plans" aria-labelledby="legal-plans-title">
+    <div class="shell">
+        <div class="section-heading reveal">
+            <span class="eyebrow">Find your level of legal support</span>
+            <h2 id="legal-plans-title">Three IY Legal plans. One clearer choice.</h2>
+            <p>Explore our three membership options, compare their benefits and choose the legal support that suits you.</p>
+        </div>
+
+        <div class="legal-plan-grid">
+            <?php foreach ($service['legal_plans'] as $index => $plan): ?>
+                <?php
+                    $planMessage = rawurlencode('Hello IY Finance Solutions, I would like more information about the ' . $plan['name'] . ' Legal Plan.');
+                    $planWhatsApp = 'https://wa.me/' . $site['whatsapp_link'] . '?text=' . $planMessage;
+                ?>
+                <article class="legal-plan-card reveal <?= $index === 1 ? 'is-featured' : '' ?>">
+                    <div class="legal-plan-topline">
+                        <span class="legal-plan-tier"><?= h($plan['tier']) ?></span>
+                        <?php if ($plan['badge'] !== ''): ?>
+                            <span class="legal-plan-badge"><?= h($plan['badge']) ?></span>
+                        <?php endif; ?>
+                    </div>
+
+                    <h3><?= h($plan['name']) ?></h3>
+
+                    <div class="legal-plan-price">
+                        <strong><?= h($plan['price']) ?></strong>
+                        <span> / month</span>
+                    </div>
+
+                    <p class="legal-plan-member">Monthly membership premium</p>
+
+                    <div class="legal-plan-family">
+                        <i class="fa-solid fa-people-group" aria-hidden="true"></i>
+                        <span><strong><?= h($plan['family_fee']) ?></strong> / month for extended family</span>
+                        <small><?= h($plan['family_age']) ?></small>
+                    </div>
+
+                    <ul class="legal-plan-features">
+                        <?php foreach ($plan['features'] as $feature): ?>
+                            <li>
+                                <i class="fa-solid fa-check" aria-hidden="true"></i>
+                                <span><?= h($feature) ?></span>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+
+                    <div class="legal-plan-extras">
+                        <p>
+                            <span>Bail benefit</span>
+                            <strong><?= h($plan['bail']) ?></strong>
+                        </p>
+                        <p>
+                            <span>Accidental-death legal cash benefit</span>
+                            <strong><?= h($plan['death']) ?></strong>
+                        </p>
+                    </div>
+
+                    <a class="button <?= $index === 1 ? 'button-accent' : 'button-primary' ?> legal-plan-cta"
+                       href="<?= h($planWhatsApp) ?>"
+                       target="_blank"
+                       rel="noopener">
+                        Enquire about this plan
+                        <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                    </a>
+                </article>
+            <?php endforeach; ?>
+        </div>
+
+        <p class="legal-plan-footnote">
+            Membership premiums and benefits are subject to the applicable IY Legal terms and conditions.
+            Please contact our team to confirm the current premiums and membership requirements before joining.
+        </p>
+    </div>
+</section>
+
+<section class="section soft-section legal-comparison-section" aria-labelledby="legal-comparison-title">
+    <div class="shell">
+        <div class="section-heading reveal">
+            <span class="eyebrow">Compare your benefits</span>
+            <h2 id="legal-comparison-title">See how our plans compare</h2>
+            <p>Take a closer look at the annual litigation benefits, waiting periods and additional legal benefits available with each membership level.</p>
+        </div>
+
+        <div class="legal-table-wrap reveal" role="region" aria-label="IY Legal plan comparison" tabindex="0">
+            <table class="legal-comparison-table">
+                <thead>
+                    <tr>
+                        <th scope="col">Benefit</th>
+                        <th scope="col">Standard</th>
+                        <th scope="col">Premium</th>
+                        <th scope="col">Premium Plus</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($service['legal_comparison'] as $comparison): ?>
+                        <tr>
+                            <th scope="row"><?= h($comparison[0]) ?></th>
+                            <td><?= h($comparison[1]) ?></td>
+                            <td><?= h($comparison[2]) ?></td>
+                            <td><?= h($comparison[3]) ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+
+        <p class="legal-plan-footnote">
+            Your membership commences after IY Legal receives your first premium.
+            Waiting periods and benefit conditions apply. Contact us if you need clarification
+            about commencement dates or eligibility for a particular benefit.
+        </p>
+    </div>
+</section>
+
+<section class="section legal-how-section">
+    <div class="shell legal-how-grid">
+        <div class="section-copy reveal">
+            <span class="eyebrow">Your legal support matters</span>
+            <h2>Professional guidance when legal challenges arise</h2>
+
+            <p>
+                Through IY Legal, you can access legal consultations and counselling,
+                assistance with negotiations and correspondence with third parties,
+                and guidance with basic legal documents.
+            </p>
+
+            <p>
+                Our legal assistance also extends to qualifying debt-relief matters,
+                including settlement negotiations, debt consolidations, payment extensions,
+                blacklisting assistance and bankruptcy-related assistance.
+            </p>
+
+            <p>
+                Qualifying matters can be referred to our network of advocates.
+                Legal fees are handled per case, subject to your selected membership
+                and the applicable authorisation requirements.
+            </p>
+        </div>
+
+        <aside class="legal-exclusions-card reveal">
+            <span class="legal-exclusions-icon">
+                <i class="fa-solid fa-scale-balanced" aria-hidden="true"></i>
+            </span>
+
+            <h3>Understanding your legal cover</h3>
+
+            <p>
+                Certain legal matters fall outside the available membership benefits.
+                These include:
+            </p>
+
+            <ul>
+                <li>Matrimonial disputes</li>
+                <li>Defamation cases</li>
+                <li>Business-relations matters</li>
+                <li>Admission-of-guilt fines</li>
+                <li>Matters arising before membership or during applicable waiting periods</li>
+                <li>Collective actions and traffic fines</li>
+                <li>Political matters and child maintenance</li>
+            </ul>
+
+            <p class="legal-small-note">
+                Additional exclusions and membership conditions apply.
+                Contact our team for clarification before relying on a particular benefit.
+            </p>
+        </aside>
+    </div>
+</section>
+<?php endif; ?>
+
 <?php if ($serviceSlug === 'credit-clearance'): ?>
 <section class="section credit-clearance-subservices" aria-labelledby="credit-clearance-options-title">
     <div class="shell">
@@ -167,6 +339,7 @@ require PROJECT_ROOT . '/includes/header.php';
 </section>
 <?php endif; ?>
 
+<?php if ($serviceSlug !== 'legal-insurance'): ?>
 <section class="section soft-section service-process-section">
     <div class="shell">
         <div class="section-heading  reveal">
@@ -188,7 +361,9 @@ require PROJECT_ROOT . '/includes/header.php';
         </div>
     </div>
 </section>
+<?php endif; ?>
 
+<?php if ($serviceSlug !== 'legal-insurance'): ?>
 <section class="section service-preparation-section">
     <div class="shell">
         <div class="section-heading reveal">
@@ -233,7 +408,9 @@ require PROJECT_ROOT . '/includes/header.php';
         </div>
     </div>
 </section>
+<?php endif; ?>
 
+<?php if ($serviceSlug !== 'legal-insurance'): ?>
 <section class="section service-outcome-section">
     <div class="shell">
         <div class="insight-card reveal">
@@ -259,6 +436,7 @@ require PROJECT_ROOT . '/includes/header.php';
         </aside>
     </div>
 </section>
+<?php endif; ?>
 
 <section class="section soft-section service-faq-section">
     <div class="shell faq-layout">

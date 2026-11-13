@@ -336,7 +336,7 @@ require PROJECT_ROOT . '/includes/header.php';
             <h2>Let’s talk about your next step.</h2>
             <p>Choose the contact method that works for you. Our team will listen first and guide you from there.</p>
             <div class="contact-actions">
-                <a class="button button-light" href="tel:<?= h($site['phone_primary_link']) ?>"><i class="fa-solid fa-phone" aria-hidden="true"></i> Call us now</a>
+                <a class="button button-light" href="contact.php#contact-form"><i class="fa-solid fa-pen-to-square" aria-hidden="true"></i> Contact Us</a>
                 <a class="button button-outline-light" href="https://wa.me/<?= h($site['whatsapp_link']) ?>?text=Hello%20IY%20Finance%20Solutions%2C%20I%20would%20like%20assistance." target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i> WhatsApp</a>
             </div>
         </div>
