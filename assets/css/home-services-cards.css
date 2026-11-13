@@ -76,7 +76,7 @@
 }
 
 .home-page .service-card {
-    min-height: 310px;
+    min-height: 340px;
     display: grid;
     grid-template-columns: minmax(112px, 39%) minmax(0, 1fr);
     padding: 0;
