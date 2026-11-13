@@ -174,7 +174,7 @@ require PROJECT_ROOT . '/includes/header.php';
                         'legal-insurance' => 'legal-insurance.jpg',
                         'credit-clearance' => 'credit-clearance.jpg',
                         'funeral-cover' => 'funeral-cover.jpg',
-                         'administrator-order' => 'adminOrder.png',
+                         'administrator-order' => 'aorder.png',
                     ];
                     $serviceImage = $serviceCardImages[$slug] ?? '';
                 ?>
